@@ -20,7 +20,8 @@ jobs:
         run: uv python install
       - name: Create RSS
         run: |
-          uv run ddor config/yamatt.toml
+          mkdir public
+          uv run ddor config/yamatt.toml public
       - name: Upload RSS
         uses: actions/upload-artifact@v5
         with:

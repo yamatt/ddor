@@ -5,7 +5,7 @@ from ratelimit import limits, sleep_and_retry
 
 
 class Reddit:
-    URL_TEMPLATE = f"http://www.reddit.com/r/{subreddit}/top/.json?t=day"
+    URL_TEMPLATE = "http://www.reddit.com/r/{subreddit}/top/.json?t=day"
     USER_AGENT = "DailyRedditScript/1.0 (by u/yamatt)"
     HEADERS = {"User-Agent": USER_AGENT}
 
@@ -15,7 +15,9 @@ class Reddit:
 
     @cached_property
     def session(self):
-        return requests.Session(headers=self.HEADERS)
+        session = requests.Session()
+        session.headers = self.HEADERS
+        return session
 
     @sleep_and_retry
     @limits(calls=30, period=60)

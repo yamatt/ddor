@@ -5,7 +5,7 @@ from functools import cached_property
 import xml.etree.ElementTree as ET
 
 
-class RSSRSSBuilder:
+class RSSBuilder:
     def __init__(self, title: str, description: str, host_url: str):
         self.title = title
         self.description = description
@@ -38,4 +38,4 @@ class RSSRSSBuilder:
         for post in posts:
             self.add_post(self.feed, post)
 
-        return ET.tostring(rss, encoding="utf-8", xml_declaration=True)
+        return ET.tostring(self.feed, encoding="utf-8", xml_declaration=True)

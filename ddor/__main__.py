@@ -1,20 +1,18 @@
+from os.path import join
 import tomllib
 
 import click
 
 from ddor.config import Config
+from ddor.logger import log
 from ddor.reddit import Reddit
 from ddor.rss import RSSBuilder
 
 
 @click.command()
-@click.argument(
-    "config_path",
-    required=True,
-    type=click.Path(exists=True, readable=True),
-    help="Path to the TOML configuration files.",
-)
-def main(config_paths):
+@click.argument("config_path", type=click.Path(exists=True, readable=True))
+@click.argument("output_directory", type=str)
+def main(config_path, output_directory):
     # Load the config
     config = Config.from_path(config_path)
     reddit = Reddit()
@@ -26,17 +24,18 @@ def main(config_paths):
 
     # Fetch posts
     all_posts = []
-    for subreddit_name in subreddits:
-        all_posts.extend(reddit.get_subreddit(subreddit_name))
+    for subreddit_name in config.subreddit_names:
+        log.info("GETTING POSTS", subreddit=subreddit_name)
+        all_posts.extend(reddit.get_subreddit_top_posts(subreddit_name))
 
-    # Sort all posts by score desc
-    all_posts.sort(key=lambda p: p["score"], reverse=True)
+    all_posts.sort(key=lambda post: post["score"], reverse=True)
 
-    # Build RSS feed
-    rss_content = rss.build_feed(posts=all_posts[config.config["config"]["count"] :])
+    rss_content = rss.build_feed(posts=all_posts[config.count:])
 
-    # Save feed
-    with open(config.config["config"]["name"], "w") as f:
+    output_file_name = f"{config.name}.rss"
+    output_file_path = join(output_directory, output_file_name)
+
+    with open(output_file_path, "wb") as f:
         f.write(rss_content)
 
 

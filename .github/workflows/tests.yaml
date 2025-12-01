@@ -26,8 +26,8 @@ jobs:
         run: uv python install
       - name: Run linters
         run: |
-          uv run black --check --diff src
-          uv run isort --check-only src
+          uv run black --check --diff ddor
+          uv run isort --check-only ddor
   security-scanner:
     name: Security Scanner
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
         run: uv python install
       - name: Run Bandit
         run: |
-          uv run bandit -r src/
+          uv run bandit -r ddor
   zizmor:
     name: GitHub Actions Static Analysis
     runs-on: ubuntu-latest

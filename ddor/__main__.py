@@ -2,9 +2,9 @@ import tomllib
 
 import click
 
-from .config import Config
-from .reddit import Reddit
-from .rss import RSSBuilder
+from ddor.config import Config
+from ddor.reddit import Reddit
+from ddor.rss import RSSBuilder
 
 
 @click.command()

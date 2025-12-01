@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from email.utils import format_datetime
 from functools import cached_property
 
-import xml.etree.ElementTree as ET # nosec
+import xml.etree.ElementTree as ET  # nosec
 
 
 class RSSBuilder:

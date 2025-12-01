@@ -3,6 +3,7 @@ from email.utils import format_datetime
 from functools import cached_property
 import defusedxml.ElementTree as ET
 
+
 class RSSRSSBuilder:
     def __init__(self, title: str, description: str, host_url: str):
         self.title = title

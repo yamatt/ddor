@@ -1,5 +1,5 @@
-from os.path import join
 import tomllib
+from os.path import join
 
 import click
 

@@ -1,0 +1,38 @@
+name: Build RSS
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # Run daily at 09am UTC
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  build-rss:
+    name: Build RSS feed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Set up Python
+        run: uv python install
+      - name: Create RSS
+        run: |
+          uv run ddor config/yamatt.toml
+      - name: Upload RSS
+        uses: actions/upload-artifact@v5
+        with:
+          name: ddor-yamatt-rss
+          path: yamatt.rss
+      - name: Update site
+        uses: actions/deploy-pages@v4
+
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1

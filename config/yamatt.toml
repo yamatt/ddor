@@ -1,0 +1,12 @@
+[config]
+name = "yamatt"
+count = 20
+
+[subreddits]
+list = [
+    "technology",
+    "CyberSecurity",
+    "Futurology",
+    "todayilearned",
+    "interestingasfuck",
+]

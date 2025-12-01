@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from email.utils import format_datetime
 from functools import cached_property
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 
 class RSSRSSBuilder:
     def __init__(self, title: str, description: str, host_url: str):

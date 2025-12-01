@@ -30,7 +30,7 @@ def main(config_path, output_directory):
 
     all_posts.sort(key=lambda post: post["score"], reverse=True)
 
-    rss_content = rss.build_feed(posts=all_posts[config.count:])
+    rss_content = rss.build_feed(posts=all_posts[config.count :])
 
     output_file_name = f"{config.name}.rss"
     output_file_path = join(output_directory, output_file_name)

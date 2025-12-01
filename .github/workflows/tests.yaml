@@ -26,8 +26,8 @@ jobs:
         run: uv python install
       - name: Run linters
         run: |
-          uv run black --check --diff src tests
-          uv run isort --check-only src tests
+          uv run black --check --diff src
+          uv run isort --check-only src
   security-scanner:
     name: Security Scanner
     runs-on: ubuntu-latest

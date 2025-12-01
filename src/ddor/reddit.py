@@ -1,7 +1,7 @@
 from functools import cached_property
 
-from ratelimit import limits, sleep_and_retry
 import requests
+from ratelimit import limits, sleep_and_retry
 
 
 class Reddit:

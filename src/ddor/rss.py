@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from email.utils import format_datetime
 from functools import cached_property
+
 import defusedxml.ElementTree as ET
 
 

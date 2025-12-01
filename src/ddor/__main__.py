@@ -1,5 +1,6 @@
-import click
 import tomllib
+
+import click
 
 from .config import Config
 from .reddit import Reddit

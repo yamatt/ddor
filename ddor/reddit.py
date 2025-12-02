@@ -6,8 +6,12 @@ from ratelimit import limits, sleep_and_retry
 
 class Reddit:
     URL_TEMPLATE = "http://www.reddit.com/r/{subreddit}/top/.json?t=day"
-    USER_AGENT = "DailyRedditScript/1.0 (by u/yamatt)"
-    HEADERS = {"User-Agent": USER_AGENT}
+    HEADERS = {
+        "User-Agent": "DailyRedditScript/1.0 (by u/yamatt)",
+        "Accept": "application/json",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Connection": "keep-alive"
+    }
 
     @classmethod
     def from_config(cls, config: dict[str, str]):
@@ -16,7 +20,7 @@ class Reddit:
     @cached_property
     def session(self):
         session = requests.Session()
-        session.headers = self.HEADERS
+        session.headers.update(self.HEADERS)
         return session
 
     @sleep_and_retry

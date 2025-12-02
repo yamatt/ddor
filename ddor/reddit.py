@@ -1,47 +1,36 @@
 from functools import cached_property
+import os
 
-import requests
-from requests.exceptions import HTTPError
-from ratelimit import limits, sleep_and_retry
+import praw
 
 from .logger import log
 
 class Reddit:
     URL_TEMPLATE = "http://www.reddit.com/r/{subreddit}/top/.json?t=day"
-    HEADERS = {
-        "User-Agent": "DailyRedditScript/1.0 (by u/yamatt)",
-        "Accept": "application/json",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Connection": "keep-alive"
-    }
+    USER_AGENT = "DailyRedditScript/1.0 (by u/yamatt)"
 
     @classmethod
-    def from_config(cls, config: dict[str, str]):
-        return cls()
+    def from_env(cls):
+        return cls(
+            os.environ["DDOR_CLIENT_ID"],
+            os.environ["DDOR_CLIENT_SECRET"],
+        )
+
+    def __init__(self, client_id: str, client_secret: str):
+        self.client_id = client_id
+        self.client_secret = client_secret
 
     @cached_property
-    def session(self):
-        session = requests.Session()
-        session.headers.update(self.HEADERS)
-        return session
+    def client(self):
+        return praw.Reddit(
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            user_agent=self.USER_AGENT
+        )
+    
+    @cached_property
+    def subreddits(self):
+        return [ str(subreddit) for subreddit in self.client.user.subreddits(limit=None) ]
 
-    @sleep_and_retry
-    @limits(calls=30, period=60)
-    def get_json(self, url):
-        response = self.session.get(url)
-
-        try:
-            response.raise_for_status()
-        except HTTPError as e:
-            log.error("JSON REQUEST", success=False, status=response.status_code, message=response.text, request=response.request.headers)
-            raise e
-
-        return response.json()
-
-    def get_subreddit(self, subreddit):
-        return self.get_json(self.URL_TEMPLATE.format(subreddit=subreddit))
-
-    def get_subreddit_top_posts(self, subreddit):
-        return [
-            post["data"] for post in self.get_subreddit(subreddit)["data"]["children"]
-        ]
+    def get_subreddit_top_posts(self, subreddit, limit=20, time_filter="day"):
+        return self.client.subreddit(subreddit).top(time_filter=time_filter, limit=limit)

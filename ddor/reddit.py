@@ -1,12 +1,10 @@
-from functools import cached_property
 import os
+from functools import cached_property
 
 import praw
 
-from .logger import log
 
 class Reddit:
-    URL_TEMPLATE = "http://www.reddit.com/r/{subreddit}/top/.json?t=day"
     USER_AGENT = "DailyRedditScript/1.0 (by u/yamatt)"
 
     @classmethod
@@ -25,12 +23,14 @@ class Reddit:
         return praw.Reddit(
             client_id=self.client_id,
             client_secret=self.client_secret,
-            user_agent=self.USER_AGENT
+            user_agent=self.USER_AGENT,
         )
-    
+
     @cached_property
     def subreddits(self):
-        return [ str(subreddit) for subreddit in self.client.user.subreddits(limit=None) ]
+        return [str(subreddit) for subreddit in self.client.user.subreddits(limit=None)]
 
     def get_subreddit_top_posts(self, subreddit, limit=20, time_filter="day"):
-        return self.client.subreddit(subreddit).top(time_filter=time_filter, limit=limit)
+        return self.client.subreddit(subreddit).top(
+            time_filter=time_filter, limit=limit
+        )

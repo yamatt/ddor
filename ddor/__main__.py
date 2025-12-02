@@ -1,4 +1,3 @@
-import tomllib
 from os.path import join
 
 import click
@@ -15,7 +14,7 @@ from ddor.rss import RSSBuilder
 def main(config_path, output_directory):
     # Load the config
     config = Config.from_path(config_path)
-    reddit = Reddit()
+    reddit = Reddit.from_env()
     rss = RSSBuilder(
         title="Daily Reddit Digest",
         description="Top posts from configured subreddits.",
@@ -28,9 +27,9 @@ def main(config_path, output_directory):
         log.info("GETTING POSTS", subreddit=subreddit_name)
         all_posts.extend(reddit.get_subreddit_top_posts(subreddit_name))
 
-    all_posts.sort(key=lambda post: post["score"], reverse=True)
+    all_posts.sort(key=lambda post: post.score, reverse=True)
 
-    rss_content = rss.build_feed(posts=all_posts[config.count :])
+    rss_content = rss.build_feed(posts=all_posts[: config.count])
 
     output_file_name = f"{config.name}.rss"
     output_file_path = join(output_directory, output_file_name)

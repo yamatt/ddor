@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from functools import cached_property
 
 from pythorhead import Lemmy as LemmyClient
 
@@ -41,7 +40,29 @@ class Lemmy:
                 f"Example: 'technology@lemmy.world'"
             )
 
-        community_name, instance_domain = community_spec.split("@", 1)
+        parts = community_spec.split("@")
+        if len(parts) != 2:
+            raise ValueError(
+                f"Community '{community_spec}' has invalid format. "
+                f"Expected exactly one '@' symbol. Example: 'technology@lemmy.world'"
+            )
+
+        community_name, instance_domain = parts
+
+        # Validate that community name and instance domain are not empty
+        if not community_name or not instance_domain:
+            raise ValueError(
+                f"Community '{community_spec}' is invalid. "
+                f"Both community name and instance must be provided."
+            )
+
+        # Basic validation for instance domain (alphanumeric, dots, hyphens)
+        if not all(c.isalnum() or c in ".-" for c in instance_domain):
+            raise ValueError(
+                f"Instance domain '{instance_domain}' contains invalid characters. "
+                f"Expected format: 'instance.com'"
+            )
+
         instance_url = (
             f"https://{instance_domain}"
             if not instance_domain.startswith("http")

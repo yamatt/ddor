@@ -1,6 +1,7 @@
 [config]
 name = "yamatt"
 count = 20
+max_concurrent_requests = 4
 
 [communities]
 list = [

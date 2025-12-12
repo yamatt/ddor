@@ -26,6 +26,7 @@ Create a TOML configuration file specifying which communities to fetch:
 [config]
 name = "my-feed"
 count = 20
+max_concurrent_requests = 4  # Optional: Number of concurrent network requests (default: 3)
 
 [communities]
 list = [
@@ -35,6 +36,11 @@ list = [
     "privacy@lemmy.dbzer0.com",
 ]
 ```
+
+**Configuration options**:
+- `name`: Name for your RSS feed
+- `count`: Maximum number of posts to include in the feed
+- `max_concurrent_requests` (optional): Maximum number of communities to fetch simultaneously (default: 3, recommended: 3-4)
 
 **Community format**: Communities must be specified as `community@instance.com` to indicate which Lemmy instance hosts that community. This allows you to aggregate content from communities across the federated network.
 

@@ -18,6 +18,11 @@ class Config:
         return self.config["config"]["count"]
 
     @property
+    def max_concurrent_requests(self):
+        """Get max concurrent requests, defaults to 3 if not specified."""
+        return self.config["config"].get("max_concurrent_requests", 3)
+
+    @property
     def communities(self):
         """Get community configurations as list of dicts with name and weight.
 

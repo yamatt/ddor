@@ -10,6 +10,14 @@ on:
       - "tests/**"
       - "pyproject.toml"
       - "uv.lock"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "ddor/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "uv.lock"
 
 permissions:
   contents: read
@@ -18,6 +26,7 @@ jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v6
       - name: Install uv
@@ -31,6 +40,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v6
       - name: Install uv
@@ -43,6 +53,7 @@ jobs:
   security-scanner:
     name: Security Scanner
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v6
       - name: Install uv
@@ -55,6 +66,7 @@ jobs:
   rss-validator:
     name: Validate RSS Feed
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v6
       - name: Install uv
@@ -64,7 +76,7 @@ jobs:
       - name: Generate RSS feed
         run: |
           mkdir -p ./out
-          uv run -m ddor config/yamatt.toml ./out
+          uv run ddor config/yamatt.toml ./out
       - name: Install RSS validator
         run: |
           sudo apt-get update

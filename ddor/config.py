@@ -18,5 +18,6 @@ class Config:
         return self.config["config"]["count"]
 
     @property
-    def subreddit_names(self):
-        return self.config["subreddits"]["list"]
+    def community_names(self):
+        """Get community names in format 'community@instance.com'."""
+        return self.config["communities"]["list"]

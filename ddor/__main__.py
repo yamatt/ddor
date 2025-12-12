@@ -3,8 +3,8 @@ from os.path import join
 import click
 
 from ddor.config import Config
+from ddor.lemmy import Lemmy
 from ddor.logger import log
-from ddor.reddit import Reddit
 from ddor.rss import RSSBuilder
 
 
@@ -14,18 +14,18 @@ from ddor.rss import RSSBuilder
 def main(config_path, output_directory):
     # Load the config
     config = Config.from_path(config_path)
-    reddit = Reddit.from_env()
+    lemmy = Lemmy.from_env()
     rss = RSSBuilder(
-        title="Daily Reddit Digest",
-        description="Top posts from configured subreddits.",
+        title="Daily Lemmy Digest",
+        description="Top posts from configured Lemmy communities.",
         host_url="https://github.io/yamatt/ddor/",
     )
 
     # Fetch posts
     all_posts = []
-    for subreddit_name in config.subreddit_names:
-        log.info("GETTING POSTS", subreddit=subreddit_name)
-        all_posts.extend(reddit.get_subreddit_top_posts(subreddit_name))
+    for community_name in config.community_names:
+        log.info("GETTING POSTS", community=community_name)
+        all_posts.extend(lemmy.get_community_top_posts(community_name))
 
     all_posts.sort(key=lambda post: post.score, reverse=True)
 

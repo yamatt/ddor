@@ -17,7 +17,7 @@ async def fetch_community_posts(lemmy, community_config, semaphore):
     async with semaphore:
         log.info("GETTING POSTS", community=community_name, weight=weight)
         # Run the synchronous get_community_top_posts in a thread pool
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         posts = await loop.run_in_executor(
             None, lemmy.get_community_top_posts, community_name
         )

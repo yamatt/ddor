@@ -1,6 +1,5 @@
 """Tests for configuration handling."""
 
-from io import BytesIO
 from tomllib import loads
 
 import pytest

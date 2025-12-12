@@ -1,6 +1,7 @@
 """Tests for the main async functionality."""
 
 import asyncio
+import time
 from unittest.mock import Mock, patch
 
 import pytest
@@ -83,8 +84,6 @@ class TestAsyncFetching:
 
         def mock_get_posts(community_name):
             """Synchronous mock that simulates a slow network call."""
-            import time
-
             nonlocal concurrent_count, max_concurrent_seen
             concurrent_count += 1
             max_concurrent_seen = max(max_concurrent_seen, concurrent_count)

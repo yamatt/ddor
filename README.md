@@ -51,3 +51,20 @@ Run the tool with a config file and output directory:
 ```bash
 uv run ddor config/yamatt.toml ./output
 ```
+
+You can specify a time period for top posts (default: Day):
+
+```bash
+uv run ddor config/yamatt.toml ./output --time-filter Week    # Last 7 days
+uv run ddor config/yamatt.toml ./output --time-filter Month   # Last 30 days
+uv run ddor config/yamatt.toml ./output --time-filter Year    # Last year
+uv run ddor config/yamatt.toml ./output --time-filter All     # All time
+```
+
+## Running Tests
+
+Run all tests with:
+
+```bash
+uv run pytest tests/ -v
+```

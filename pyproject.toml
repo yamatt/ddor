@@ -11,4 +11,4 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["bandit>=1.9.2", "black>=25.11.0", "isort>=7.0.0"]
+dev = ["bandit>=1.9.2", "black>=25.11.0", "isort>=7.0.0", "pytest>=8.3.4"]

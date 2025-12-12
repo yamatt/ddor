@@ -77,7 +77,13 @@ class Lemmy:
         if not community:
             return []
 
-        community_id = community.get("community", {}).get("id")
+        # discover_community returns the community ID directly as an int
+        if isinstance(community, int):
+            community_id = community
+        else:
+            # Fallback for dictionary response format
+            community_id = community.get("community", {}).get("id")
+        
         if not community_id:
             return []
 

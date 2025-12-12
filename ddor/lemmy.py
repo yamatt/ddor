@@ -151,6 +151,25 @@ class LemmyPost:
         return self._community.get("name", "")
 
     @property
+    def instance(self):
+        """Return the Lemmy instance domain (e.g., lemmy.world)."""
+        # Try to extract from the post's AP ID first
+        ap_id = self._post.get("ap_id", "")
+        if ap_id and "://" in ap_id:
+            # AP ID format: https://instance.com/post/12345
+            domain = ap_id.split("://")[1].split("/")[0]
+            return domain
+        
+        # Fallback to community's actor_id
+        actor_id = self._community.get("actor_id", "")
+        if actor_id and "://" in actor_id:
+            # Actor ID format: https://instance.com/c/community
+            domain = actor_id.split("://")[1].split("/")[0]
+            return domain
+        
+        return "unknown"
+
+    @property
     def selftext(self):
         """Return post body text if available."""
         return self._post.get("body", "")

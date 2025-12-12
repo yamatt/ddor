@@ -80,6 +80,11 @@ class RSSBuilder:
                 if para.strip():
                     content_parts.append(f"<p>{escape(para.strip())}</p>")
 
+        # Add HR and instance name at the end
+        if hasattr(post, "instance"):
+            content_parts.append("<hr/>")
+            content_parts.append(f"<p><small>{escape(post.instance)}</small></p>")
+
         return "".join(content_parts) if content_parts else None
 
     def add_post(self, feed, post):

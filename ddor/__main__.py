@@ -18,7 +18,8 @@ def main(config_path, output_directory):
     rss = RSSBuilder(
         title="Daily Lemmy Digest",
         description="Top posts from configured Lemmy communities.",
-        host_url="https://github.io/yamatt/ddor/",
+        host_url="https://yamatt.github.io/ddor/",
+        feed_url=f"https://yamatt.github.io/ddor/{config.name}.rss",
     )
 
     # Fetch posts

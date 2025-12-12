@@ -4,21 +4,36 @@ from email.utils import format_datetime
 from functools import cached_property
 from html import escape
 
+# Register the atom namespace to use 'atom' prefix instead of 'ns0'
+ET.register_namespace("atom", "http://www.w3.org/2005/Atom")
+
 
 class RSSBuilder:
-    def __init__(self, title: str, description: str, host_url: str):
+    def __init__(
+        self, title: str, description: str, host_url: str, feed_url: str = None
+    ):
         self.title = title
         self.description = description
         self.host_url = host_url
+        self.feed_url = feed_url or host_url
+
+    @cached_property
+    def rss(self):
+        return ET.Element("rss", version="2.0")
 
     @cached_property
     def feed(self):
-        rss = ET.Element("rss", version="2.0")
-        channel = ET.SubElement(rss, "channel")
+        channel = ET.SubElement(self.rss, "channel")
 
         ET.SubElement(channel, "title").text = self.title
         ET.SubElement(channel, "description").text = self.description
         ET.SubElement(channel, "link").text = self.host_url
+
+        # Add atom:link with rel="self"
+        atom_link = ET.SubElement(channel, "{http://www.w3.org/2005/Atom}link")
+        atom_link.set("href", self.feed_url)
+        atom_link.set("rel", "self")
+        atom_link.set("type", "application/rss+xml")
 
         return channel
 
@@ -89,4 +104,4 @@ class RSSBuilder:
         for post in posts:
             self.add_post(self.feed, post)
 
-        return ET.tostring(self.feed, encoding="utf-8", xml_declaration=True)
+        return ET.tostring(self.rss, encoding="utf-8", xml_declaration=True)

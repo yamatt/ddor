@@ -1,40 +1,57 @@
 # DDOR
 
-Reddit has been enshitified. There I said it.
+Daily Dose of... whatever you want! Get a curated RSS feed of top posts from your favorite Lemmy communities.
 
-It has infinite scroll, _recommendations_, and you can't find the stuff you're actually interested in.
+This tool was inspired by the YouTube channel Daily Dose of Internet that curates the best videos together every few days. It takes that model of a regular feed of what is actually the very best and with minimal addictive qualities, by outputting it as an RSS feed daily.
 
-I really like the YouTube channel Daily Dose of Internet that curates the best videos together every few days.
-
-I thought I would take that model of a regular feed of what is actually the very best and with minimal addictive qualities, by outputting it as an RSS feed daily.
+Originally built for Reddit, it now works with Lemmy - the federated, open-source link aggregator.
 
 ## Setup
 
-### Getting Reddit API Credentials
+### Choosing a Lemmy Instance
 
-This tool requires Reddit API credentials to fetch posts. Follow these steps to get your client ID and secret:
+Lemmy is federated, meaning there are many instances (servers) you can connect to. Some popular instances include:
+- `lemmy.world` - General purpose, largest instance
+- `lemmy.ml` - The original instance
+- `lemmy.dbzer0.com` - Privacy-focused
+- `sh.itjust.works` - General purpose
 
-1. Go to https://www.reddit.com/prefs/apps
-2. Scroll down and click **"create another app..."** (or "are you a developer? create an app...")
-3. Fill in the form:
-   - **name**: Choose a name for your app (e.g., "ddor")
-   - **App type**: Select **"script"**
-   - **description**: Optional
-   - **about url**: Optional
-   - **redirect uri**: Enter `http://localhost:8080` (required but not used for script apps)
-4. Click **"create app"**
-5. Your credentials will be displayed:
-   - **Client ID**: The string under "personal use script" (below the app name)
-   - **Client Secret**: The string next to "secret"
+You can browse communities across any instance, regardless of which one you use.
 
 ### Setting Environment Variables
 
-Set the following environment variables with your credentials:
+Set the following environment variables:
 
 ```bash
-export DDOR_CLIENT_ID="your_client_id_here"
-export DDOR_CLIENT_SECRET="your_client_secret_here"
+# Required: The Lemmy instance URL
+export DDOR_LEMMY_INSTANCE="https://lemmy.world"
+
+# Optional: Authentication (only needed for private communities or rate limiting)
+export DDOR_LEMMY_USERNAME="your_username"
+export DDOR_LEMMY_PASSWORD="your_password"
 ```
+
+**Note**: Authentication is optional. Most public communities can be accessed without logging in.
+
+### Creating a Configuration File
+
+Create a TOML configuration file specifying which communities to fetch:
+
+```toml
+[config]
+name = "my-feed"
+count = 20
+
+[communities]
+list = [
+    "technology",
+    "linux",
+    "selfhosted",
+    "privacy",
+]
+```
+
+The community names should be the community name without the instance (e.g., `technology` not `technology@lemmy.world`).
 
 ## Usage
 

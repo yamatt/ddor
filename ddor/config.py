@@ -18,5 +18,14 @@ class Config:
         return self.config["config"]["count"]
 
     @property
-    def subreddit_names(self):
+    def community_names(self):
+        """Get community names (Lemmy terminology)."""
+        # Support both 'communities' and 'subreddits' for backward compatibility
+        if "communities" in self.config:
+            return self.config["communities"]["list"]
         return self.config["subreddits"]["list"]
+
+    @property
+    def subreddit_names(self):
+        """Deprecated: Use community_names instead."""
+        return self.community_names

@@ -2,11 +2,11 @@
 name = "yamatt"
 count = 20
 
-[subreddits]
+[communities]
 list = [
     "technology",
-    "CyberSecurity",
-    "Futurology",
+    "cybersecurity",
+    "futurology",
     "todayilearned",
-    "interestingasfuck",
+    "interesting",
 ]

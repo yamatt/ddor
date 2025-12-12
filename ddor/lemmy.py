@@ -117,6 +117,7 @@ class LemmyPost:
         self._post = post_data.get("post", {})
         self._community = post_data.get("community", {})
         self._creator = post_data.get("creator", {})
+        self.community_weight = 0  # Per-community weight bias
 
     @property
     def title(self):
@@ -201,3 +202,24 @@ class LemmyPost:
             engagement_normalized * engagement_weight
         )
         return weighted_score
+
+    def get_weighted_engagement_score(self, score_weight=1.0, engagement_weight=1.0):
+        """
+        Get engagement score with community weight bias applied.
+
+        Args:
+            score_weight: Weight for the upvote score (default: 1.0)
+            engagement_weight: Weight for engagement (upvotes + comments) (default: 1.0)
+
+        Returns:
+            float: Weighted engagement score with community bias
+        """
+        base_score = self.get_engagement_score(score_weight, engagement_weight)
+        
+        if base_score == 0:
+            return 0
+        
+        # Apply community weight bias (0 = no bias, 1 = boost, -1 = suppress)
+        # Formula: score * (1 + weight * 0.5) allows ±50% adjustment
+        bias_multiplier = 1.0 + (self.community_weight * 0.5)
+        return base_score * bias_multiplier

@@ -22,15 +22,20 @@ def main(config_path, output_directory):
         feed_url=f"https://yamatt.github.io/ddor/{config.name}.rss",
     )
 
-    # Fetch posts
+    # Fetch posts with per-community weights
     all_posts = []
-    for community_name in config.community_names:
-        log.info("GETTING POSTS", community=community_name)
-        all_posts.extend(lemmy.get_community_top_posts(community_name))
+    for community_config in config.communities:
+        community_name = community_config["name"]
+        weight = community_config["weight"]
+        log.info("GETTING POSTS", community=community_name, weight=weight)
+        posts = lemmy.get_community_top_posts(community_name)
+        # Apply community weight to each post's engagement score
+        for post in posts:
+            post.community_weight = weight
+        all_posts.extend(posts)
 
-    # Sort by engagement score (upvotes + log(comments)) instead of raw score
-    # This gives more weight to discussion while still considering upvotes
-    all_posts.sort(key=lambda post: post.get_engagement_score(), reverse=True)
+    # Sort by weighted engagement score
+    all_posts.sort(key=lambda post: post.get_weighted_engagement_score(), reverse=True)
 
     rss_content = rss.build_feed(posts=all_posts[: config.count])
 

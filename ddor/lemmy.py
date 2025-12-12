@@ -83,7 +83,7 @@ class Lemmy:
         else:
             # Fallback for dictionary response format
             community_id = community.get("community", {}).get("id")
-        
+
         if not community_id:
             return []
 

@@ -26,12 +26,17 @@ Set the following environment variables:
 # Required: The Lemmy instance URL
 export DDOR_LEMMY_INSTANCE="https://lemmy.world"
 
-# Optional: Authentication (only needed for private communities or rate limiting)
-export DDOR_LEMMY_USERNAME="your_username"
-export DDOR_LEMMY_PASSWORD="your_password"
+# Optional: Authentication (NOT required for public communities)
+export DDOR_LEMMY_USERNAME="your_username"  # Optional
+export DDOR_LEMMY_PASSWORD="your_password"  # Optional
 ```
 
-**Note**: Authentication is optional. Most public communities can be accessed without logging in.
+**Important**: Authentication (username and password) is **NOT required** for accessing public communities. You only need to set `DDOR_LEMMY_INSTANCE`. Authentication is only needed if:
+- You want to access private/restricted communities
+- The instance has strict rate limiting for anonymous users
+- You need authenticated features (which this tool doesn't use)
+
+For most users, just setting `DDOR_LEMMY_INSTANCE` is sufficient!
 
 ### Creating a Configuration File
 

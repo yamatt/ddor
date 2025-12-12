@@ -47,6 +47,7 @@ jobs:
       security-events: write
       contents: read # only needed for private repos
       actions: read # only needed for private repos
+    continue-on-error: true  # Don't fail if code scanning is not enabled
     steps:
       - uses: actions/checkout@v6
         with:

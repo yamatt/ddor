@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 from pythorhead import Lemmy as LemmyClient
+from pythorhead.types import SortType
 
 
 class Lemmy:
@@ -87,10 +88,20 @@ class Lemmy:
         if not community_id:
             return []
 
+        # Map time_filter to SortType enum
+        sort_map = {
+            "Day": SortType.TopDay,
+            "Week": SortType.TopWeek,
+            "Month": SortType.TopMonth,
+            "Year": SortType.TopYear,
+            "All": SortType.TopAll,
+        }
+        sort_type = sort_map.get(time_filter, SortType.TopDay)
+
         # Fetch top posts from the community
         posts_response = client.post.list(
             community_id=community_id,
-            sort="Top" + time_filter,  # e.g., "TopDay", "TopWeek"
+            sort=sort_type,
             limit=limit,
         )
 

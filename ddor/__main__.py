@@ -21,6 +21,11 @@ async def fetch_community_posts(lemmy, community_config, semaphore):
         posts = await loop.run_in_executor(
             None, lemmy.get_community_top_posts, community_name
         )
+        
+        # Warn if no posts were returned
+        if not posts:
+            log.warning("NO POSTS RETURNED", community=community_name, weight=weight)
+        
         # Apply community weight to each post's engagement score
         for post in posts:
             post.community_weight = weight

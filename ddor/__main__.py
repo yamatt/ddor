@@ -1,4 +1,5 @@
 import asyncio
+from enum import Enum
 from os.path import join
 
 import click
@@ -9,34 +10,51 @@ from ddor.logger import log
 from ddor.rss import RSSBuilder
 
 
-async def fetch_community_posts(lemmy, community_config, semaphore):
+class TimeFilter(str, Enum):
+    """Time period for top posts."""
+
+    DAY = "Day"
+    WEEK = "Week"
+    MONTH = "Month"
+    YEAR = "Year"
+    ALL = "All"
+
+
+async def fetch_community_posts(
+    lemmy, community_config, semaphore, time_filter=TimeFilter.DAY.value
+):
     """Fetch posts from a single community with semaphore-controlled concurrency."""
     community_name = community_config["name"]
     weight = community_config["weight"]
 
     async with semaphore:
-        log.info("GETTING POSTS", community=community_name, weight=weight)
+        log.info(
+            "GETTING POSTS",
+            community=community_name,
+            weight=weight,
+            time_filter=time_filter,
+        )
         # Run the synchronous get_community_top_posts in a thread pool
         loop = asyncio.get_running_loop()
         posts = await loop.run_in_executor(
-            None, lemmy.get_community_top_posts, community_name
+            None, lemmy.get_community_top_posts, community_name, 20, time_filter
         )
-        
+
         # Warn if no posts were returned
         if not posts:
             log.warning("NO POSTS RETURNED", community=community_name, weight=weight)
-        
+
         # Apply community weight to each post's engagement score
         for post in posts:
             post.community_weight = weight
         return posts
 
 
-async def fetch_all_communities(lemmy, communities, max_concurrent):
+async def fetch_all_communities(lemmy, communities, max_concurrent, time_filter):
     """Fetch posts from all communities concurrently with controlled concurrency."""
     semaphore = asyncio.Semaphore(max_concurrent)
     tasks = [
-        fetch_community_posts(lemmy, community_config, semaphore)
+        fetch_community_posts(lemmy, community_config, semaphore, time_filter)
         for community_config in communities
     ]
     results = await asyncio.gather(*tasks)
@@ -50,7 +68,13 @@ async def fetch_all_communities(lemmy, communities, max_concurrent):
 @click.command()
 @click.argument("config_path", type=click.Path(exists=True, readable=True))
 @click.argument("output_directory", type=str)
-def main(config_path, output_directory):
+@click.option(
+    "--time-filter",
+    type=click.Choice([tf.value for tf in TimeFilter], case_sensitive=False),
+    default=TimeFilter.DAY.value,
+    help="Time period for top posts (default: Day)",
+)
+def main(config_path, output_directory, time_filter):
     # Load the config
     config = Config.from_path(config_path)
     lemmy = Lemmy.from_env()
@@ -66,9 +90,12 @@ def main(config_path, output_directory):
         "FETCHING POSTS",
         total_communities=len(config.communities),
         max_concurrent=config.max_concurrent_requests,
+        time_filter=time_filter,
     )
     all_posts = asyncio.run(
-        fetch_all_communities(lemmy, config.communities, config.max_concurrent_requests)
+        fetch_all_communities(
+            lemmy, config.communities, config.max_concurrent_requests, time_filter
+        )
     )
 
     # Sort by weighted engagement score

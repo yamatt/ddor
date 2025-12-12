@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from ddor.__main__ import fetch_all_communities, fetch_community_posts
+from ddor.__main__ import TimeFilter, fetch_all_communities, fetch_community_posts
 
 
 class TestAsyncFetching:
@@ -26,9 +26,34 @@ class TestAsyncFetching:
 
         posts = await fetch_community_posts(mock_lemmy, community_config, semaphore)
 
-        # Verify the mock was called
+        # Verify the mock was called with default time_filter
         mock_lemmy.get_community_top_posts.assert_called_once_with(
-            "technology@lemmy.world"
+            "technology@lemmy.world", 20, TimeFilter.DAY.value
+        )
+
+        # Verify weight was applied
+        assert len(posts) == 1
+        assert posts[0].community_weight == 1
+
+    @pytest.mark.asyncio
+    async def test_fetch_community_posts_with_time_filter(self):
+        """Test fetching posts with a custom time filter."""
+        # Mock the Lemmy instance
+        mock_lemmy = Mock()
+        mock_post = Mock()
+        mock_post.community_weight = 0
+        mock_lemmy.get_community_top_posts.return_value = [mock_post]
+
+        community_config = {"name": "technology@lemmy.world", "weight": 1}
+        semaphore = asyncio.Semaphore(1)
+
+        posts = await fetch_community_posts(
+            mock_lemmy, community_config, semaphore, time_filter=TimeFilter.WEEK.value
+        )
+
+        # Verify the mock was called with Week filter
+        mock_lemmy.get_community_top_posts.assert_called_once_with(
+            "technology@lemmy.world", 20, TimeFilter.WEEK.value
         )
 
         # Verify weight was applied
@@ -61,7 +86,7 @@ class TestAsyncFetching:
         ]
 
         all_posts = await fetch_all_communities(
-            mock_lemmy, communities, max_concurrent=2
+            mock_lemmy, communities, max_concurrent=2, time_filter=TimeFilter.DAY.value
         )
 
         # Verify all communities were fetched
@@ -82,7 +107,7 @@ class TestAsyncFetching:
         concurrent_count = 0
         max_concurrent_seen = 0
 
-        def mock_get_posts(community_name):
+        def mock_get_posts(community_name, limit=20, time_filter="Day"):
             """Synchronous mock that simulates a slow network call."""
             nonlocal concurrent_count, max_concurrent_seen
             concurrent_count += 1
@@ -99,7 +124,9 @@ class TestAsyncFetching:
         ]
 
         # Limit to 3 concurrent requests
-        await fetch_all_communities(mock_lemmy, communities, max_concurrent=3)
+        await fetch_all_communities(
+            mock_lemmy, communities, max_concurrent=3, time_filter=TimeFilter.DAY.value
+        )
 
         # Verify we never exceeded the limit
         assert max_concurrent_seen <= 3

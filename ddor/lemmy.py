@@ -10,44 +10,49 @@ class Lemmy:
 
     @classmethod
     def from_env(cls):
-        instance_url = os.environ.get("DDOR_LEMMY_INSTANCE")
-        if not instance_url:
-            raise ValueError(
-                "DDOR_LEMMY_INSTANCE environment variable is required. "
-                "Example: export DDOR_LEMMY_INSTANCE='https://lemmy.world'"
-            )
-        return cls(
-            instance_url,
-            os.environ.get("DDOR_LEMMY_USERNAME"),
-            os.environ.get("DDOR_LEMMY_PASSWORD"),
-        )
+        return cls()
 
-    def __init__(self, instance_url: str, username: str = None, password: str = None):
-        self.instance_url = instance_url
-        self.username = username
-        self.password = password
+    def __init__(self):
+        self._clients = {}  # Cache clients for different instances
 
-    @cached_property
-    def client(self):
-        client = LemmyClient(self.instance_url, request_timeout=30)
-        if self.username and self.password:
-            client.log_in(self.username, self.password)
-        return client
+    def _get_client(self, instance_url: str):
+        """Get or create a client for a specific instance."""
+        if instance_url not in self._clients:
+            client = LemmyClient(instance_url, request_timeout=30)
+            self._clients[instance_url] = client
+        return self._clients[instance_url]
 
-    def get_community_top_posts(self, community_name, limit=20, time_filter="Day"):
+    def get_community_top_posts(self, community_spec, limit=20, time_filter="Day"):
         """
         Fetch top posts from a Lemmy community.
 
         Args:
-            community_name: Name of the community (without the instance)
+            community_spec: Community specification in format "community@instance.com"
             limit: Maximum number of posts to fetch
             time_filter: Time period for top posts ('Day', 'Week', 'Month', 'Year', 'All')
 
         Returns:
             List of LemmyPost objects with compatible attributes
         """
+        # Parse community specification
+        if "@" not in community_spec:
+            raise ValueError(
+                f"Community '{community_spec}' must be in format 'community@instance.com'. "
+                f"Example: 'technology@lemmy.world'"
+            )
+
+        community_name, instance_domain = community_spec.split("@", 1)
+        instance_url = (
+            f"https://{instance_domain}"
+            if not instance_domain.startswith("http")
+            else instance_domain
+        )
+
+        # Get the appropriate client
+        client = self._get_client(instance_url)
+
         # Discover the community to get its ID
-        community = self.client.discover_community(community_name)
+        community = client.discover_community(community_name)
         if not community:
             return []
 
@@ -56,7 +61,7 @@ class Lemmy:
             return []
 
         # Fetch top posts from the community
-        posts_response = self.client.post.list(
+        posts_response = client.post.list(
             community_id=community_id,
             sort="Top" + time_filter,  # e.g., "TopDay", "TopWeek"
             limit=limit,

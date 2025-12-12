@@ -8,7 +8,7 @@ Originally built for Reddit, it now works with Lemmy - the federated, open-sourc
 
 ## Setup
 
-### Choosing a Lemmy Instance
+### Choosing Lemmy Communities
 
 Lemmy is federated, meaning there are many instances (servers) you can connect to. Some popular instances include:
 - `lemmy.world` - General purpose, largest instance
@@ -16,27 +16,7 @@ Lemmy is federated, meaning there are many instances (servers) you can connect t
 - `lemmy.dbzer0.com` - Privacy-focused
 - `sh.itjust.works` - General purpose
 
-You can browse communities across any instance, regardless of which one you use.
-
-### Setting Environment Variables
-
-Set the following environment variables:
-
-```bash
-# Required: The Lemmy instance URL
-export DDOR_LEMMY_INSTANCE="https://lemmy.world"
-
-# Optional: Authentication (NOT required for public communities)
-export DDOR_LEMMY_USERNAME="your_username"  # Optional
-export DDOR_LEMMY_PASSWORD="your_password"  # Optional
-```
-
-**Important**: Authentication (username and password) is **NOT required** for accessing public communities. You only need to set `DDOR_LEMMY_INSTANCE`. Authentication is only needed if:
-- You want to access private/restricted communities
-- The instance has strict rate limiting for anonymous users
-- You need authenticated features (which this tool doesn't use)
-
-For most users, just setting `DDOR_LEMMY_INSTANCE` is sufficient!
+You can fetch posts from communities across **any instance** by specifying them in your config file.
 
 ### Creating a Configuration File
 
@@ -49,14 +29,14 @@ count = 20
 
 [communities]
 list = [
-    "technology",
-    "linux",
-    "selfhosted",
-    "privacy",
+    "technology@lemmy.world",
+    "linux@lemmy.ml",
+    "selfhosted@lemmy.world",
+    "privacy@lemmy.dbzer0.com",
 ]
 ```
 
-The community names should be the community name without the instance (e.g., `technology` not `technology@lemmy.world`).
+**Community format**: Communities must be specified as `community@instance.com` to indicate which Lemmy instance hosts that community. This allows you to aggregate content from communities across the federated network.
 
 ## Usage
 

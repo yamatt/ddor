@@ -19,13 +19,5 @@ class Config:
 
     @property
     def community_names(self):
-        """Get community names (Lemmy terminology)."""
-        # Support both 'communities' and 'subreddits' for backward compatibility
-        if "communities" in self.config:
-            return self.config["communities"]["list"]
-        return self.config["subreddits"]["list"]
-
-    @property
-    def subreddit_names(self):
-        """Deprecated: Use community_names instead."""
-        return self.community_names
+        """Get community names in format 'community@instance.com'."""
+        return self.config["communities"]["list"]

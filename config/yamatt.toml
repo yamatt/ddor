@@ -4,9 +4,9 @@ count = 20
 
 [communities]
 list = [
-    "technology",
-    "cybersecurity",
-    "futurology",
-    "todayilearned",
-    "interesting",
+    "technology@lemmy.world",
+    "cybersecurity@lemmy.world",
+    "futurology@lemmy.world",
+    "todayilearned@lemmy.world",
+    "interesting@lemmy.world",
 ]

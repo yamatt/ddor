@@ -20,14 +20,14 @@ class Config:
     @property
     def communities(self):
         """Get community configurations as list of dicts with name and weight.
-        
+
         Format: {name = "community@instance", weight = 0}
-        
+
         Weight: -1 to 1 (0 = no bias, 1 = increase bias, -1 = decrease bias)
         """
         communities_config = self.config["communities"]["list"]
         result = []
-        
+
         for item in communities_config:
             if not isinstance(item, dict):
                 raise ValueError(
@@ -35,12 +35,14 @@ class Config:
                     "Each community must be a dict with 'name' and 'weight' keys. "
                     'Example: {{name = "technology@lemmy.world", weight = 0}}'
                 )
-            
-            result.append({
-                "name": item["name"].strip(),
-                "weight": item.get("weight", 0),
-            })
-        
+
+            result.append(
+                {
+                    "name": item["name"].strip(),
+                    "weight": item.get("weight", 0),
+                }
+            )
+
         return result
 
     @property

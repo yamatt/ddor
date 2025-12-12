@@ -215,10 +215,10 @@ class LemmyPost:
             float: Weighted engagement score with community bias
         """
         base_score = self.get_engagement_score(score_weight, engagement_weight)
-        
+
         if base_score == 0:
             return 0
-        
+
         # Apply community weight bias (0 = no bias, 1 = boost, -1 = suppress)
         # Formula: score * (1 + weight * 0.5) allows ±50% adjustment
         bias_multiplier = 1.0 + (self.community_weight * 0.5)

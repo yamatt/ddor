@@ -28,6 +28,18 @@ jobs:
         run: |
           uv run black --check --diff ddor
           uv run isort --check-only ddor
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Set up Python
+        run: uv python install
+      - name: Run pytest
+        run: |
+          uv run pytest tests/ -v
   security-scanner:
     name: Security Scanner
     runs-on: ubuntu-latest

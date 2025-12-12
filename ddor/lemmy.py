@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from functools import cached_property
 
 from pythorhead import Lemmy as LemmyClient
@@ -9,8 +10,14 @@ class Lemmy:
 
     @classmethod
     def from_env(cls):
+        instance_url = os.environ.get("DDOR_LEMMY_INSTANCE")
+        if not instance_url:
+            raise ValueError(
+                "DDOR_LEMMY_INSTANCE environment variable is required. "
+                "Example: export DDOR_LEMMY_INSTANCE='https://lemmy.world'"
+            )
         return cls(
-            os.environ["DDOR_LEMMY_INSTANCE"],
+            instance_url,
             os.environ.get("DDOR_LEMMY_USERNAME"),
             os.environ.get("DDOR_LEMMY_PASSWORD"),
         )
@@ -75,7 +82,10 @@ class LemmyPost:
     @property
     def url(self):
         # Prefer the post's AP ID (ActivityPub ID) or URL
-        return self._post.get("ap_id") or self._post.get("url", "")
+        ap_id = self._post.get("ap_id")
+        if ap_id:
+            return ap_id
+        return self._post.get("url", "")
 
     @property
     def score(self):
@@ -84,8 +94,6 @@ class LemmyPost:
     @property
     def created_utc(self):
         # Lemmy uses ISO 8601 timestamps, need to convert to Unix timestamp
-        from datetime import datetime
-
         published = self._post.get("published", "")
         if published:
             # Parse ISO 8601 timestamp and convert to Unix timestamp

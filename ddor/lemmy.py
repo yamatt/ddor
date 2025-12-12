@@ -159,14 +159,14 @@ class LemmyPost:
             # AP ID format: https://instance.com/post/12345
             domain = ap_id.split("://")[1].split("/")[0]
             return domain
-        
+
         # Fallback to community's actor_id
         actor_id = self._community.get("actor_id", "")
         if actor_id and "://" in actor_id:
             # Actor ID format: https://instance.com/c/community
             domain = actor_id.split("://")[1].split("/")[0]
             return domain
-        
+
         return "unknown"
 
     @property

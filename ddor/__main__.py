@@ -67,6 +67,7 @@ def main(config_path, output_directory):
     )
 
     # Sort by weighted engagement score
+    log.info("SORTING POSTS", total_posts=len(all_posts))
     all_posts.sort(key=lambda post: post.get_weighted_engagement_score(), reverse=True)
 
     rss_content = rss.build_feed(posts=all_posts[: config.count])
@@ -74,6 +75,7 @@ def main(config_path, output_directory):
     output_file_name = f"{config.name}.rss"
     output_file_path = join(output_directory, output_file_name)
 
+    log.info("WRITING RSS", path=output_file_path)
     with open(output_file_path, "wb") as f:
         f.write(rss_content)
 

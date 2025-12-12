@@ -28,7 +28,9 @@ def main(config_path, output_directory):
         log.info("GETTING POSTS", community=community_name)
         all_posts.extend(lemmy.get_community_top_posts(community_name))
 
-    all_posts.sort(key=lambda post: post.score, reverse=True)
+    # Sort by engagement score (upvotes + log(comments)) instead of raw score
+    # This gives more weight to discussion while still considering upvotes
+    all_posts.sort(key=lambda post: post.get_engagement_score(), reverse=True)
 
     rss_content = rss.build_feed(posts=all_posts[: config.count])
 

@@ -161,3 +161,43 @@ class LemmyPost:
         if thumbnail_url:
             return {"images": [{"source": {"url": thumbnail_url}}]}
         return None
+
+    def get_engagement_score(self, score_weight=1.0, engagement_weight=1.0):
+        """
+        Calculate a weighted engagement score combining upvotes and comments.
+
+        Args:
+            score_weight: Weight for the upvote score (default: 1.0)
+            engagement_weight: Weight for engagement (upvotes + comments) (default: 1.0)
+
+        Returns:
+            float: Weighted engagement score
+        """
+        upvotes = self._post.get("upvotes", 0) or 0
+        downvotes = self._post.get("downvotes", 0) or 0
+        comments = self._post.get("comments", 0) or 0
+
+        # Fall back to score if upvotes/downvotes not available
+        if upvotes == 0 and downvotes == 0:
+            upvotes = max(0, self.score)
+
+        # Calculate engagement: (upvotes + comments) normalized
+        engagement = upvotes + comments
+
+        # Combined score: weighted average of score and engagement
+        score = self.score
+
+        if score == 0 and engagement == 0:
+            return 0
+
+        # Normalize to avoid large numbers skewing results
+        # Using log scale for engagement to prevent comment spam from dominating
+        import math
+
+        engagement_normalized = math.log(engagement + 1)  # +1 to avoid log(0)
+        score_normalized = score
+
+        weighted_score = (score_normalized * score_weight) + (
+            engagement_normalized * engagement_weight
+        )
+        return weighted_score

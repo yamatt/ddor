@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      - yamatt
     labels:
       - dependabot
       - github-actions
@@ -11,6 +13,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      - yamatt
     labels:
       - dependabot
       - python

@@ -102,7 +102,8 @@ class RSSBuilder:
             ET.SubElement(item, "description").text = content
 
         if post.published:
-            ET.SubElement(item, "pubDate").text = post.published.isoformat()
+            # Use RFC 2822 format for pubDate (e.g., 'Mon, 02 Jan 2006 15:04:05 +0000')
+            ET.SubElement(item, "pubDate").text = format_datetime(post.published)
 
     def build_feed(self, posts: list):
         # Add posts in reverse order so the first post is at the top of the RSS feed

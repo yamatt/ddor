@@ -81,8 +81,8 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: alpine:3.23
-          options: -v ${{ github.workspace }}/out:/out
+          options: -v ${{ github.workspace }}:/workspace
           run: |
             apk add --no-cache libxml2-utils
-            xmllint --noout --schema https://www.rssboard.org/rss-2-0-11.xsd /out/test.rss || \
-            xmllint --noout /out/test.rss
+            xmllint --noout --schema /workspace/tests/spec/rss_2.0.1.xsd /workspace/out/test.rss || \
+            xmllint --noout /workspace/out/test.rss

@@ -19,7 +19,9 @@ class TestAsyncFetching:
         mock_lemmy = Mock()
         mock_post = Mock()
         mock_post.community_weight = 0
-        mock_lemmy.get_community_top_posts.return_value = [mock_post]
+        mock_lemmy.get_community_top_posts.side_effect = lambda *args, **kwargs: [
+            mock_post
+        ]
 
         community_config = {"name": "technology@lemmy.world", "weight": 1}
         semaphore = asyncio.Semaphore(1)
@@ -28,7 +30,7 @@ class TestAsyncFetching:
 
         # Verify the mock was called with default time_filter
         mock_lemmy.get_community_top_posts.assert_called_once_with(
-            "technology@lemmy.world", 20, TimeFilter.DAY.value
+            "technology@lemmy.world", 1, 20, TimeFilter.DAY.value
         )
 
         # Verify weight was applied
@@ -42,7 +44,9 @@ class TestAsyncFetching:
         mock_lemmy = Mock()
         mock_post = Mock()
         mock_post.community_weight = 0
-        mock_lemmy.get_community_top_posts.return_value = [mock_post]
+        mock_lemmy.get_community_top_posts.side_effect = lambda *args, **kwargs: [
+            mock_post
+        ]
 
         community_config = {"name": "technology@lemmy.world", "weight": 1}
         semaphore = asyncio.Semaphore(1)
@@ -53,7 +57,7 @@ class TestAsyncFetching:
 
         # Verify the mock was called with Week filter
         mock_lemmy.get_community_top_posts.assert_called_once_with(
-            "technology@lemmy.world", 20, TimeFilter.WEEK.value
+            "technology@lemmy.world", 1, 20, TimeFilter.WEEK.value
         )
 
         # Verify weight was applied
@@ -107,7 +111,9 @@ class TestAsyncFetching:
         concurrent_count = 0
         max_concurrent_seen = 0
 
-        def mock_get_posts(community_name, limit=20, time_filter="Day"):
+        def mock_get_posts(
+            community_name, community_weight, limit=20, time_filter="Day"
+        ):
             """Synchronous mock that simulates a slow network call."""
             nonlocal concurrent_count, max_concurrent_seen
             concurrent_count += 1

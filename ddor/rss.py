@@ -83,14 +83,16 @@ class RSSBuilder:
         # Add HR and instance name at the end
         if hasattr(post, "instance"):
             content_parts.append("<hr/>")
-            content_parts.append(f"<p><small>{escape(post.instance)}</small></p>")
+            content_parts.append(
+                f"<p><small>{escape(post.instance.instance_url)}</small></p>"
+            )
 
         return "".join(content_parts) if content_parts else None
 
     def add_post(self, feed, post):
         item = ET.SubElement(self.feed, "item")
         # Use generic format that works for both Reddit and Lemmy
-        ET.SubElement(item, "title").text = f"[{post.subreddit}] {post.title}"
+        ET.SubElement(item, "title").text = f"[{post.community}] {post.title}"
         ET.SubElement(item, "link").text = post.url
         ET.SubElement(item, "guid").text = post.url
 
@@ -99,10 +101,8 @@ class RSSBuilder:
         if content:
             ET.SubElement(item, "description").text = content
 
-        pub_date = format_datetime(
-            datetime.fromtimestamp(post.created_utc, tz=timezone.utc)
-        )
-        ET.SubElement(item, "pubDate").text = pub_date
+        if post.published:
+            ET.SubElement(item, "pubDate").text = post.published.isoformat()
 
     def build_feed(self, posts: list):
 

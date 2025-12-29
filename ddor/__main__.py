@@ -37,7 +37,7 @@ async def fetch_community_posts(
         # Run the synchronous get_community_top_posts in a thread pool
         loop = asyncio.get_running_loop()
         posts = await loop.run_in_executor(
-            None, lemmy.get_community_top_posts, weight, community_name, 20, time_filter
+            None, lemmy.get_community_top_posts, community_name, weight, 20, time_filter
         )
 
         # Warn if no posts were returned
@@ -100,9 +100,24 @@ def main(config_path, output_directory, time_filter):
 
     # Sort by weighted engagement score
     log.info("SORTING POSTS", total_posts=len(all_posts))
-    all_posts.sort(key=lambda post: post.get_weighted_engagement_score(), reverse=True)
+    all_posts.sort(key=lambda post: post.get_engagement_score(), reverse=True)
 
-    rss_content = rss.build_feed(posts=all_posts[: config.count])
+    top_posts = all_posts[: config.count]
+
+    for post in top_posts:
+        log.debug(
+            "SELECTED POST",
+            title=post.title,
+            community=post.community_name,
+            instance=post.instance.instance_url,
+            url=post.url,
+            score=post.score,
+            comments=post.comments,
+            weighted=post.community_weight,
+            engagement_score=post.get_engagement_score(),
+        )
+
+    rss_content = rss.build_feed(posts=top_posts)
 
     output_file_name = f"{config.name}.rss"
     output_file_path = join(output_directory, output_file_name)

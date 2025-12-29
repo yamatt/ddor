@@ -105,8 +105,8 @@ class RSSBuilder:
             ET.SubElement(item, "pubDate").text = post.published.isoformat()
 
     def build_feed(self, posts: list):
-
-        for post in posts:
+        # Add posts in reverse order so the first post is at the top of the RSS feed
+        for post in reversed(posts):
             self.add_post(self.feed, post)
 
         return ET.tostring(self.rss, encoding="utf-8", xml_declaration=True)

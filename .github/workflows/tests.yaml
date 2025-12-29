@@ -83,5 +83,5 @@ jobs:
           sudo apt-get install -y libxml2-utils
       - name: Validate RSS XML structure
         run: |
-          xmllint --noout --schema https://www.rssboard.org/rss-2-0-11.xsd ./out/yamatt.rss || \
-          xmllint --noout ./out/yamatt.rss
+          xmllint --noout --schema https://www.rssboard.org/rss-2-0-11.xsd ./out/test.rss || \
+          xmllint --noout ./out/test.rss

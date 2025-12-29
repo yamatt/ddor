@@ -20,7 +20,7 @@ list = [
     { name = "videos@lemmy.world", weight = 0 },
     { name = "mildlyinteresting@lemmy.world", weight = 0 },
     { name = "gaming@lemmy.world", weight = 0 },
-    { name = "politicalhumour@lemmy.world", weight = 0 },
+    { name = "politicalhumor@lemmy.world", weight = 0 },
     { name = "science@lemmy.world", weight = 0 },
     { name = "funny@lemmy.world", weight = 0 },
     { name = "xkcd@lemmy.world", weight = 0 },

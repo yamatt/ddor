@@ -77,11 +77,12 @@ jobs:
         run: |
           mkdir -p ./out
           uv run -m ddor config/test.toml ./out
-      - name: Install RSS validator
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libxml2-utils
-      - name: Validate RSS XML structure
-        run: |
-          xmllint --noout --schema https://www.rssboard.org/rss-2-0-11.xsd ./out/test.rss || \
-          xmllint --noout ./out/test.rss
+      - name: Validate RSS XML structure (Alpine)
+        uses: addnab/docker-run-action@v3
+        with:
+          image: alpine:3.23
+          options: -v ${{ github.workspace }}/out:/out
+          run: |
+            apk add --no-cache libxml2
+            xmllint --noout --schema https://www.rssboard.org/rss-2-0-11.xsd /out/test.rss || \
+            xmllint --noout /out/test.rss

@@ -17,11 +17,7 @@ class Post:
 
     @property
     def _id(self):
-        return (
-            self.post["id"]
-            if "id" in self.post
-            else self.post["post_view"]["post"]["id"]
-        )
+        return self.post.get("id") or self.post.get("post_id")
 
     @property
     def title(self):

@@ -1,4 +1,5 @@
 from datetime import datetime
+from functools import cached_property
 
 from pythorhead import Lemmy as LemmyClient
 from pythorhead.types import SortType
@@ -38,7 +39,16 @@ class LemmyPost(Post):
     def score(self):
         return self.counts["score"]
 
-    @property
+    def get_full_post(self):
+        """Fetch the full post data from the instance."""
+        log.info(
+            "FETCHING FULL POST",
+            post=self._id,
+            instance=self.instance.instance_url,
+        )
+        return self.instance.get_post(self._id)
+
+    @cached_property
     def counts(self):
         # Try to get counts from the post dict
         if "counts" in self.post:
@@ -46,17 +56,7 @@ class LemmyPost(Post):
         if "post_view" in self.post and "counts" in self.post["post_view"]:
             return self.post["post_view"]["counts"]
 
-        # If counts are missing, fetch from the instance using post ID
-        post_id = self.post.get("id") or self.post.get("post_id")
-        if post_id is None:
-            raise KeyError("Cannot fetch counts: post ID is missing from post data.")
-        # Fetch the full post from the instance
-        log.info(
-            "FETCHING FULL POST FOR COUNTS",
-            post=post_id,
-            instance=self.instance.instance_url,
-        )
-        full_post = self.instance.get_post(post_id)
+        full_post = self.get_full_post()
         # Update self.post with the fetched data for future accesses
         if "counts" in full_post.post:
             self.post["counts"] = full_post.post["counts"]
@@ -94,6 +94,7 @@ class LemmyInstance:
         community_name: str,
         limit: int = 20,
         time_filter: SortType = SortType.TopDay,
+        full_post: bool = False,
     ) -> list[LemmyPost]:
         """
         Fetch top posts from a Lemmy community.
@@ -114,17 +115,23 @@ class LemmyInstance:
                 f"Community '{community_name}' not found on instance {self.instance_url}."
             )
 
-        # Fetch top posts from the community
-        posts = self.client.post.list(
-            community_id=community_id,
-            sort=time_filter,
-            limit=limit,
-        )
-
         # Convert Lemmy posts to a compatible format
-        return [
-            LemmyPost.from_post(post, self.community_weight, self) for post in posts
+        posts = [
+            LemmyPost.from_post(post, self.community_weight, self)
+            for post in self.client.post.list(
+                community_id=community_id,
+                sort=time_filter,
+                limit=limit,
+            )
         ]
+
+        if not full_post:
+            return posts
+
+        for post in posts:
+            post.counts  # Trigger counts fetching
+
+        return posts
 
     def get_post(self, post_id: int) -> LemmyPost:
         """Fetch a single post by its ID on this instance."""
@@ -170,4 +177,5 @@ class Lemmy:
             community_name=community,
             limit=limit,
             time_filter=sort_type,
+            full_post=True,
         )

@@ -83,6 +83,6 @@ jobs:
           image: alpine:3.23
           options: -v ${{ github.workspace }}/out:/out
           run: |
-            apk add --no-cache libxml2
+            apk add --no-cache libxml2-utils
             xmllint --noout --schema https://www.rssboard.org/rss-2-0-11.xsd /out/test.rss || \
             xmllint --noout /out/test.rss

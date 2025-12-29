@@ -76,7 +76,7 @@ jobs:
       - name: Generate RSS feed
         run: |
           mkdir -p ./out
-          uv run -m ddor config/yamatt.toml ./out
+          uv run -m ddor config/test.toml ./out
       - name: Install RSS validator
         run: |
           sudo apt-get update

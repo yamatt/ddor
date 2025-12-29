@@ -92,7 +92,7 @@ class RSSBuilder:
     def add_post(self, feed, post):
         item = ET.SubElement(self.feed, "item")
         # Use generic format that works for both Reddit and Lemmy
-        ET.SubElement(item, "title").text = f"[{post.community}] {post.title}"
+        ET.SubElement(item, "title").text = f"[{post.community_name}] {post.title}"
         ET.SubElement(item, "link").text = post.url
         ET.SubElement(item, "guid").text = post.url
 

@@ -22,7 +22,7 @@ class Lemmy:
             self._clients[instance_url] = client
         return self._clients[instance_url]
 
-    def get_community_top_posts(self, community_spec, limit=20, time_filter="Day"):
+    def get_community_top_posts(self, community_spec, community_weight, limit=20, time_filter="Day"):
         """
         Fetch top posts from a Lemmy community.
 
@@ -106,18 +106,28 @@ class Lemmy:
         )
 
         # Convert Lemmy posts to a compatible format
-        return [LemmyPost(post) for post in posts_response]
+        return [LemmyPost.from_post(post, community_weight) for post in posts_response]
 
 
 class LemmyPost:
     """Wrapper class to make Lemmy posts compatible with the RSS builder."""
 
-    def __init__(self, post_data):
-        self._data = post_data
-        self._post = post_data.get("post", {})
-        self._community = post_data.get("community", {})
-        self._creator = post_data.get("creator", {})
-        self.community_weight = 0  # Per-community weight bias
+    @classmethod
+    def from_post(cls, post_data, community_weight):
+        return cls(
+            data = post_data
+            post = post_data.get("post", {})
+            community = post_data.get("community", {})
+            creator = post_data.get("creator", {})
+            community_weight  # Per-community weight bias
+        )
+
+    def __init__(self, data, post, community, creator, community_weight):
+        self._data = data
+        self._post = post
+        self._community = community
+        self._creator = creator
+        self.community_weight = community_weight
 
     @property
     def title(self):

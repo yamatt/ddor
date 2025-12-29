@@ -37,7 +37,7 @@ async def fetch_community_posts(
         # Run the synchronous get_community_top_posts in a thread pool
         loop = asyncio.get_running_loop()
         posts = await loop.run_in_executor(
-            None, lemmy.get_community_top_posts, community_name, 20, time_filter
+            None, lemmy.get_community_top_posts, weight, community_name, 20, time_filter
         )
 
         # Warn if no posts were returned

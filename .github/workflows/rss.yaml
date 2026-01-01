@@ -9,6 +9,7 @@ on:
     paths:
       - ".github/workflows/rss.yaml"
       - "ddor/**"
+      - "config/*"
 
 concurrency:
   group: "{{ github.workflow }}-rss"

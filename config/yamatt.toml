@@ -5,7 +5,7 @@ max_concurrent_requests = 4
 
 [communities]
 list = [
-    { name = "technology@lemmy.world", weight = -0.5 },
+    { name = "technology@lemmy.world", weight = 0 },
     { name = "cybersecurity@lemmy.world", weight = 0 },
     { name = "futurology@lemmy.world", weight = 0 },
     { name = "todayilearned@lemmy.world", weight = 0 },

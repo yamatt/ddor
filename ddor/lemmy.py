@@ -173,9 +173,18 @@ class Lemmy:
         community, instance_domain = community_spec.split("@")
         instance = self.get_instance(f"https://{instance_domain}", community_weight)
         sort_type = self.SORT_MAP.get(time_filter, SortType.TopDay)
-        return instance.get_top_posts(
-            community_name=community,
-            limit=limit,
-            time_filter=sort_type,
-            full_post=True,
-        )
+        try:
+            top_posts = instance.get_top_posts(
+                community_name=community,
+                limit=limit,
+                time_filter=sort_type,
+                full_post=True,
+            )
+        except ValueError as e:
+            log.error(
+                "Error fetching top posts",
+                community=community_spec,
+                error=str(e),
+            )
+            return []
+        return top_posts

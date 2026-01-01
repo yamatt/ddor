@@ -37,6 +37,7 @@ jobs:
       - name: Install dependencies
         run: uv sync
       - name: Create RSS
+        timeout-minutes: 5
         run: |
           mkdir public
           uv run -m ddor config/yamatt.toml public

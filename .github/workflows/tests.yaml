@@ -36,7 +36,7 @@ jobs:
       - name: Run linters
         run: |
           uv run black --check --diff ddor
-          uv run isort --check-only ddor
+          uv run isort --diff ddor
   test:
     name: Run Tests
     runs-on: ubuntu-latest

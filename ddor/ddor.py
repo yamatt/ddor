@@ -1,11 +1,16 @@
 import math
 from datetime import datetime
+from urllib.parse import urlparse
 
 from ddor.logger import log
 
 
 class Post:
     """Wrapper class to make Lemmy posts compatible with the RSS builder."""
+
+    BLOCKED_THUMBNAIL_DOMAINS = [
+        "i.imgur.com",
+    ]
 
     def __init__(self, post, community, creator, community_weight, instance):
         post = post["post"] if "post" in post else post
@@ -67,6 +72,18 @@ class Post:
         if thumbnail_url:
             return {"images": [{"source": {"url": thumbnail_url}}]}
         return None
+
+    @property
+    def is_nsfw(self) -> bool:
+        return self.post.get("nsfw", False)
+
+    @property
+    def is_blocked(self) -> bool:
+        if self.thumbnail_url:
+            parsed_url = urlparse(self.thumbnail_url)
+            if parsed_url.netloc in self.BLOCKED_THUMBNAIL_DOMAINS:
+                return True
+        return False
 
     @property
     def engagement(self):

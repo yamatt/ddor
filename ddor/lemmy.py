@@ -95,6 +95,8 @@ class LemmyInstance:
         limit: int = 20,
         time_filter: SortType = SortType.TopDay,
         full_post: bool = False,
+        allow_nsfw: bool = False,
+        allow_blocked: bool = False,
     ) -> list[LemmyPost]:
         """
         Fetch top posts from a Lemmy community.
@@ -124,6 +126,13 @@ class LemmyInstance:
                 limit=limit,
             )
         ]
+
+        # Filter posts based on NSFW and blocked status
+        for post in posts:
+            if not allow_nsfw and post.is_nsfw:
+                posts.remove(post)
+            if not allow_blocked and post.is_blocked:
+                posts.remove(post)
 
         if not full_post:
             return posts

@@ -21,7 +21,12 @@ class TimeFilter(str, Enum):
 
 
 async def fetch_community_posts(
-    lemmy, community_config, semaphore, time_filter=TimeFilter.DAY.value
+    lemmy,
+    community_config,
+    semaphore,
+    time_filter=TimeFilter.DAY.value,
+    allow_nsfw=False,
+    allow_blocked=False,
 ):
     """Fetch posts from a single community with semaphore-controlled concurrency."""
     community_name = community_config["name"]
@@ -37,7 +42,14 @@ async def fetch_community_posts(
         # Run the synchronous get_community_top_posts in a thread pool
         loop = asyncio.get_running_loop()
         posts = await loop.run_in_executor(
-            None, lemmy.get_community_top_posts, community_name, weight, 20, time_filter
+            None,
+            lemmy.get_community_top_posts,
+            community_name,
+            weight,
+            20,
+            time_filter,
+            allow_nsfw,
+            allow_blocked,
         )
 
         # Warn if no posts were returned
@@ -47,7 +59,14 @@ async def fetch_community_posts(
         return posts
 
 
-async def fetch_all_communities(lemmy, communities, max_concurrent, time_filter):
+async def fetch_all_communities(
+    lemmy,
+    communities,
+    max_concurrent,
+    time_filter,
+    allow_nsfw=False,
+    allow_blocked=False,
+):
     """Fetch posts from all communities concurrently with controlled concurrency."""
     semaphore = asyncio.Semaphore(max_concurrent)
     tasks = [

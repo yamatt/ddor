@@ -4,6 +4,9 @@ from email.utils import format_datetime
 from functools import cached_property
 from html import escape
 
+from markdown import markdown
+import nh3
+
 # Register the atom namespace to use 'atom' prefix instead of 'ns0'
 ET.register_namespace("atom", "http://www.w3.org/2005/Atom")
 
@@ -74,13 +77,10 @@ class RSSBuilder:
 
         # Add selftext content if it exists
         if hasattr(post, "selftext") and post.selftext:
-            # Convert line breaks to HTML paragraphs
-            paragraphs = post.selftext.split("\n\n")
-            for para in paragraphs:
-                if para.strip():
-                    content_parts.append(f"<p>{escape(para.strip())}</p>")
+            html_body = self.html_body(post)
+            content_parts.append(f'<div class="post-body">{html_body}</div>')
 
-        # Add HR and instance name at the end
+        # Add instance name at the end
         if hasattr(post, "instance"):
             content_parts.append("<hr/>")
             content_parts.append(
@@ -88,6 +88,15 @@ class RSSBuilder:
             )
 
         return "".join(content_parts) if content_parts else None
+
+    def html_body(self, post):
+        # Using 'extra' extension allows for better handling of
+        # Markdown inside HTML blocks and tables.
+        raw_html = markdown(post.selftext, extensions=["extra"])
+
+        # nh3 will strip any tags NOT in this set,
+        # effectively neutralizing any HTML the user tried to sneak in.
+        return nh3.clean(raw_html)
 
     def add_post(self, feed, post):
         item = ET.SubElement(self.feed, "item")

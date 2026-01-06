@@ -4,7 +4,13 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["click>=8.3.1", "pythorhead>=0.28.1", "structlog>=25.5.0"]
+dependencies = [
+    "click>=8.3.1",
+    "markdown>=3.10",
+    "nh3>=0.3.2",
+    "pythorhead>=0.28.1",
+    "structlog>=25.5.0",
+]
 
 [dependency-groups]
 dev = ["bandit>=1.9.2", "black>=25.11.0", "isort>=7.0.0", "pytest>=8.3.4", "pytest-asyncio>=0.24.0"]

@@ -4,8 +4,8 @@ from email.utils import format_datetime
 from functools import cached_property
 from html import escape
 
-from markdown import markdown
 import nh3
+from markdown import markdown
 
 # Register the atom namespace to use 'atom' prefix instead of 'ns0'
 ET.register_namespace("atom", "http://www.w3.org/2005/Atom")

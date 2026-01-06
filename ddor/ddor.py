@@ -66,13 +66,19 @@ class Post:
 
     @property
     def image_url(self):
-        if self.post.get("url_content_type", "").startswith("image/"):
-            return self.destination_url
-        if self.destination_url and any(
-            self.destination_url.lower().endswith(ext)
-            for ext in [".jpg", ".jpeg", ".png", ".gif"]
-        ):
-            return self.destination_url
+        url = self.destination_url
+
+        # Define our criteria for a valid image URL
+        is_image_type = self.post.get("url_content_type", "").startswith("image/")
+        has_image_ext = any(
+            url.lower().endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".gif"]
+        )
+
+        # If it's a valid image and the domain isn't blocked, use it
+        if is_image_type or has_image_ext:
+            if urlparse(url).netloc not in self.BLOCKED_THUMBNAIL_DOMAINS:
+                return url
+
         return self.thumbnail_url
 
     @property
@@ -93,10 +99,9 @@ class Post:
 
     @property
     def is_blocked(self) -> bool:
-        if self.thumbnail_url:
-            parsed_url = urlparse(self.thumbnail_url)
-            if parsed_url.netloc in self.BLOCKED_THUMBNAIL_DOMAINS:
-                return True
+        """
+        Used to check if the post is blocked, or links to blocked content.
+        """
         return False
 
     @property

@@ -44,35 +44,12 @@ class RSSBuilder:
         """Build HTML content with images and text from the post."""
         content_parts = []
 
-        # Try to get the best image URL
-        image_url = None
-
-        # Check if the post URL is a direct image link
-        if hasattr(post, "url") and post.url:
-            url_lower = post.url.lower()
-            if any(
-                url_lower.endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".gif"]
-            ):
-                image_url = post.url
-
-        # Check for preview images if no direct image URL
-        if not image_url and hasattr(post, "preview"):
-            try:
-                images = post.preview.get("images", [])
-                if images:
-                    # Get the source (highest resolution) image
-                    image_url = images[0].get("source", {}).get("url", "")
-                    # Reddit escapes URLs in preview, need to unescape
-                    image_url = image_url.replace("&amp;", "&")
-            except (AttributeError, KeyError, IndexError):
-                pass
-
         # Add image if found
-        if image_url:
-            escaped_url = escape(image_url, quote=True)
+        if post.image_url:
+            escaped_url = escape(post.image_url, quote=True)
             escaped_title = escape(post.title, quote=True)
             content_parts.append(
-                f'<p><img src="{escaped_url}" alt="{escaped_title}"/></p>'
+                f'<p class="post-image"><img src="{escaped_url}" alt="{escaped_title}"/></p>'
             )
 
         # Add selftext content if it exists

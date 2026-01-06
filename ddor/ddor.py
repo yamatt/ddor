@@ -30,11 +30,14 @@ class Post:
 
     @property
     def url(self):
-        # Prefer the post's AP ID (ActivityPub ID) or URL
-        ap_id = self.post["ap_id"]
-        if ap_id:
-            return ap_id
-        return self.post["url"]
+        """
+        Return the ActivityPub URL to the original post
+        """
+        return self.post["ap_id"]
+
+    @property
+    def destination_url(self):
+        return self.post.get("url")
 
     @property
     def published(self) -> datetime:
@@ -60,6 +63,17 @@ class Post:
     def selftext(self):
         """Return post body text if available."""
         return self.post.get("body", "")
+
+    @property
+    def image_url(self):
+        if self.post.get("url_content_type", "").startswith("image/"):
+            return self.destination_url
+        if self.destination_url and any(
+            self.destination_url.lower().endswith(ext)
+            for ext in [".jpg", ".jpeg", ".png", ".gif"]
+        ):
+            return self.destination_url
+        return self.thumbnail_url
 
     @property
     def thumbnail_url(self):

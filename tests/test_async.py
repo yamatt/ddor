@@ -18,7 +18,7 @@ class TestAsyncFetching:
         # Mock the Lemmy instance
         mock_lemmy = Mock()
         mock_post = Mock()
-        mock_post.community_weight = 0
+        mock_post.community_weight = 1
         mock_lemmy.get_community_top_posts.side_effect = lambda *args, **kwargs: [
             mock_post
         ]
@@ -43,7 +43,7 @@ class TestAsyncFetching:
         # Mock the Lemmy instance
         mock_lemmy = Mock()
         mock_post = Mock()
-        mock_post.community_weight = 0
+        mock_post.community_weight = 1
         mock_lemmy.get_community_top_posts.side_effect = lambda *args, **kwargs: [
             mock_post
         ]
@@ -73,7 +73,7 @@ class TestAsyncFetching:
         def create_mock_posts():
             """Create fresh mock post objects for each call."""
             post1 = Mock()
-            post1.community_weight = 0
+            post1.community_weight = 1
             post2 = Mock()
             post2.community_weight = 0
             return [post1, post2]

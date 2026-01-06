@@ -44,9 +44,6 @@ async def fetch_community_posts(
         if not posts:
             log.warning("NO POSTS RETURNED", community=community_name, weight=weight)
 
-        # Apply community weight to each post's engagement score
-        for post in posts:
-            post.community_weight = weight
         return posts
 
 

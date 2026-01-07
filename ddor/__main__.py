@@ -109,7 +109,7 @@ def main(config_path, output_directory, time_filter):
 
     post_visibility_rate = (config.count / len(all_posts) ) * 100
     post_loss_rate = 100 - post_visibility_rate
-    log.info("POST VISIBILITY", total_posts=len(all_posts) post_visibility_rate=round(post_visibility_rate, 2), round(post_loss_rate=100, 2))
+    log.info("POST VISIBILITY", total_posts=len(all_posts), post_visibility_rate=round(post_visibility_rate, 2), round(post_loss_rate=100, 2))
 
     # Sort by weighted engagement score
     log.info("SORTING POSTS", total_posts=len(all_posts))

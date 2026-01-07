@@ -69,7 +69,7 @@ class RSSBuilder:
     def html_body(self, post):
         # Using 'extra' extension allows for better handling of
         # Markdown inside HTML blocks and tables.
-        raw_html = markdown(post.selftext, extensions=["extra", "autolink"])
+        raw_html = markdown(post.selftext, extensions=["extra"])
 
         # nh3 will strip any tags NOT in this set,
         # effectively neutralizing any HTML the user tried to sneak in.

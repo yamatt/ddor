@@ -113,7 +113,7 @@ def main(config_path, output_directory, time_filter):
         "POST VISIBILITY",
         total_posts=len(all_posts),
         post_visibility_rate=round(post_visibility_rate, 2),
-        post_loss_rate=round(post_loss_rate, 2)
+        post_loss_rate=round(post_loss_rate, 2),
     )
 
     # Sort by weighted engagement score

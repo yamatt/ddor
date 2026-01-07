@@ -70,9 +70,11 @@ class Post:
 
         # Define our criteria for a valid image URL
         is_image_type = self.post.get("url_content_type", "").startswith("image/")
-        has_image_ext = any(
-            url.lower().endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".gif"]
-        )
+        has_image_ext = False
+        if url:
+            has_image_ext = any(
+                url.lower().endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".gif"]
+            )
 
         # If it's a valid image and the domain isn't blocked, use it
         if is_image_type or has_image_ext:

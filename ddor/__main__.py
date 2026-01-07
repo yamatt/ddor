@@ -112,12 +112,13 @@ def main(config_path, output_directory, time_filter):
     log.info(
         "POST VISIBILITY",
         total_posts=len(all_posts),
+        max_post_count=config.count,
         post_visibility_rate=round(post_visibility_rate, 2),
         post_loss_rate=round(post_loss_rate, 2),
     )
 
     # Sort by weighted engagement score
-    log.info("SORTING POSTS", total_posts=len(all_posts))
+    log.info("SORTING POSTS", total_posts=len(all_posts), max_post_count=config.count)
     all_posts.sort(key=lambda post: post.get_engagement_score(), reverse=True)
 
     top_posts = all_posts[: config.count]

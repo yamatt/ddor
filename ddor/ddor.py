@@ -107,14 +107,16 @@ class Post:
         return False
 
     @property
-    def engagement(self):
+    def engagement(self) -> int:
         return self.upvotes + self.comments
 
     @property
-    def bias_multiplier(self):
+    def bias_multiplier(self) -> float:
         return 1.0 + (self.community_weight * 0.5)
 
-    def get_engagement_score(self, score_weight=1.0, engagement_weight=1.0):
+    def get_engagement_score(
+        self, score_weight: float = 1.0, engagement_weight: float = 1.0
+    ) -> float:
         """
         Calculate a weighted engagement score combining upvotes and comments.
 

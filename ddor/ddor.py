@@ -1,5 +1,5 @@
 import math
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 from ddor.logger import log
@@ -139,3 +139,6 @@ class Post:
         )
 
         return weighted_score * self.bias_multiplier
+
+    def hacker_news_rank(self, gravity: float = 1.8, hours_delta: int = 2) -> float:
+        return (self.score) / pow((self.published + timedelta(hours=2)), gravity)

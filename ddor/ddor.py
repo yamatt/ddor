@@ -108,7 +108,7 @@ class Post:
 
     @property
     def engagement(self) -> int:
-        return self.upvotes + self.comments
+        return self.upvotes + self.comments_count
 
     @property
     def bias_multiplier(self) -> float:

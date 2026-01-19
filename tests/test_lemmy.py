@@ -139,4 +139,4 @@ class TestLemmyPost:
         assert isinstance(post.published, datetime)  # Should be a valid datetime object
         assert post.upvotes == 150
         assert post.downvotes == 10
-        assert post.comments == 5
+        assert post.comments_count == 5

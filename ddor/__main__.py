@@ -131,7 +131,7 @@ def main(config_path, output_directory, time_filter):
             instance=post.instance.instance_url,
             url=post.url,
             score=post.score,
-            comments=post.comments,
+            comments=post.comments_count,
             weighted=post.community_weight,
             engagement_score=post.get_engagement_score(),
         )

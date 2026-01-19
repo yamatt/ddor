@@ -31,7 +31,7 @@ class LemmyPost(Post):
         return self.post["counts"]["downvotes"]
 
     @property
-    def comments(self):
+    def comments_count(self):
         # Lemmy posts use 'comments' or 'num_comments' if available
         return self.counts["comments"]
 

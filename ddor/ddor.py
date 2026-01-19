@@ -144,3 +144,24 @@ class Post:
 
     def hacker_news_rank(self, gravity: float = 1.8, hours_delta: int = 2) -> float:
         return (self.score) / pow((self.published + timedelta(hours=2)), gravity)
+
+    def lobster_rank(
+        self, base: float = 0, hotness_window_seconds: int = 79200
+    ) -> float:
+        # 1. Sign: Determines if the score is positive, negative, or zero
+        if self.score > 0:
+            sign = 1
+        elif self.score < 0:
+            sign = -1
+        else:
+            sign = 0
+
+        score = self.upvotes - self.downvotes
+
+        order = math.log10(max(abs(score + 1) + self.comments_count, 1))
+
+        age = self.published.timestamp() / hotness_window_seconds
+
+        hotness = -1 * (base + (order * sign) + age)
+
+        return hotness

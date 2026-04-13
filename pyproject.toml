@@ -8,7 +8,7 @@ dependencies = [
     "click>=8.3.1",
     "markdown>=3.10",
     "nh3>=0.3.2",
-    "pythorhead>=0.28.1",
+    "pythorhead>=0.34.3",
     "structlog>=25.5.0",
 ]
 

@@ -10,6 +10,7 @@ on:
       - ".github/workflows/rss.yaml"
       - "ddor/**"
       - "config/*"
+  workflow_dispatch:
 
 concurrency:
   group: "{{ github.workflow }}-rss"

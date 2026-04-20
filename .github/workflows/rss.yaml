@@ -46,7 +46,7 @@ jobs:
           mkdir public
           uv run -m ddor config/yamatt.toml public
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: public
       - name: Deploy to GitHub Pages

@@ -12,6 +12,7 @@ list = [
     { name = "games@lemmy.world", weight = 0 },
     { name = "nottheonion@lemmy.world", weight = 0 },
     { name = "selfhosted@lemmy.world", weight = 0 },
+    { name = "formula1@lemmy.world", weight = 0 },
     { name = "til@lemmy.world", weight = 0 },
     { name = "showerthoughts@lemmy.world", weight = 0 },
     { name = "linux_gaming@lemmy.world", weight = 0 },

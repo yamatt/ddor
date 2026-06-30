@@ -22,22 +22,54 @@ class LemmyPost(Post):
         )
 
     @property
-    def upvotes(self):
+    def upvotes(self) -> int:
         # Lemmy posts use 'score' for upvotes if 'upvotes' is missing
-        return self.counts["upvotes"]
+        try:
+            return self.post["counts"]["upvotes"]
+        except Exception:
+            log.error(
+                "UPVOTES NOT FOUND",
+                post=self._id,
+                instance=self.instance.instance_url,
+            )
+            return 0
 
     @property
-    def downvotes(self):
-        return self.post["counts"]["downvotes"]
+    def downvotes(self) -> int:
+        try:
+            return self.post["counts"]["downvotes"]
+        except Exception:
+            log.error(
+                "DOWNVOTES NOT FOUND",
+                post=self._id,
+                instance=self.instance.instance_url,
+            )
+            return 0
 
     @property
-    def comments_count(self):
+    def comments_count(self) -> int:
         # Lemmy posts use 'comments' or 'num_comments' if available
-        return self.counts["comments"]
+        try:
+            return self.counts["comments"]
+        except Exception:
+            log.error(
+                "COMMENTS COUNT NOT FOUND",
+                post=self._id,
+                instance=self.instance.instance_url,
+            )
+            return 0
 
     @property
-    def score(self):
-        return self.counts["score"]
+    def score(self) -> int:
+        try:
+            return self.counts["score"]
+        except Exception:
+            log.error(
+                "SCORE NOT FOUND",
+                post=self._id,
+                instance=self.instance.instance_url,
+            )
+            return 0
 
     def get_full_post(self):
         """Fetch the full post data from the instance."""
@@ -46,7 +78,9 @@ class LemmyPost(Post):
             post=self._id,
             instance=self.instance.instance_url,
         )
-        return self.instance.get_post(self._id)
+        if self.instance.post_exists(self._id):
+            return self.instance.get_post(self._id)
+        raise ValueError(f"Post with ID {self._id} not found on instance {self.instance.instance_url}.")
 
     @cached_property
     def counts(self):
@@ -56,7 +90,16 @@ class LemmyPost(Post):
         if "post_view" in self.post and "counts" in self.post["post_view"]:
             return self.post["post_view"]["counts"]
 
-        full_post = self.get_full_post()
+        try:
+            full_post = self.get_full_post()
+        except ValueError as e:
+            log.error(
+                "FULL POST COUNT FETCH FAILED",
+                post=self._id,
+                instance=self.instance.instance_url,
+                error=str(e),
+            )
+            raise
         # Update self.post with the fetched data for future accesses
         if "counts" in full_post.post:
             self.post["counts"] = full_post.post["counts"]
@@ -142,6 +185,20 @@ class LemmyInstance:
 
         return posts
 
+    def post_exists(self, post_id: int) -> bool:
+        """Check if a post exists on this instance."""
+        try:
+            self.client.post.get(post_id=post_id)
+            return True
+        except Exception as e:
+            log.warning(
+                "POST NOT FOUND",
+                post=post_id,
+                instance=self.instance_url,
+                error=str(e),
+            )
+            return False
+
     def get_post(self, post_id: int) -> LemmyPost:
         """Fetch a single post by its ID on this instance."""
         return LemmyPost.from_post(
@@ -191,7 +248,7 @@ class Lemmy:
             )
         except ValueError as e:
             log.error(
-                "Error fetching top posts",
+                "COMMUNITY NOT FOUND",
                 community=community_spec,
                 error=str(e),
             )

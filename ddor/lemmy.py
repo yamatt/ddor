@@ -80,7 +80,9 @@ class LemmyPost(Post):
         )
         if self.instance.post_exists(self._id):
             return self.instance.get_post(self._id)
-        raise ValueError(f"Post with ID {self._id} not found on instance {self.instance.instance_url}.")
+        raise ValueError(
+            f"Post with ID {self._id} not found on instance {self.instance.instance_url}."
+        )
 
     @cached_property
     def counts(self):

@@ -32,7 +32,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v8.3.2
       - name: "Set up Python"
-        uses: actions/setup-python@v6.3.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version-file: ".python-version"
       - name: Run linters
@@ -48,7 +48,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v8.3.2
       - name: "Set up Python"
-        uses: actions/setup-python@v6.3.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version-file: ".python-version"
       - name: Run pytest
@@ -63,7 +63,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v8.3.2
       - name: "Set up Python"
-        uses: actions/setup-python@v6.3.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version-file: ".python-version"
       - name: Run Bandit
@@ -78,7 +78,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v8.3.2
       - name: "Set up Python"
-        uses: actions/setup-python@v6.3.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version-file: ".python-version"
       - name: Generate RSS feed

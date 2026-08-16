@@ -43,7 +43,7 @@ jobs:
       - name: Create RSS
         timeout-minutes: 5
         run: |
-          mkdir public
+          mkdir -p public
           uv run -m ddor config/yamatt.toml public
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

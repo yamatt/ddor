@@ -101,7 +101,16 @@ class LemmyPost(Post):
                 instance=self.instance.instance_url,
                 error=str(e),
             )
-            raise
+            # If we cannot fetch the full post (timeouts, private instance, etc.),
+            # return a counts dict with zeros so the caller can continue.
+            default_counts = {"upvotes": 0, "downvotes": 0, "comments": 0, "score": 0}
+            # Cache the default counts on the post for future accesses
+            try:
+                self.post["counts"] = default_counts
+            except Exception:
+                # If the post object is not writable for some reason, ignore
+                pass
+            return default_counts
         # Update self.post with the fetched data for future accesses
         if "counts" in full_post.post:
             self.post["counts"] = full_post.post["counts"]

@@ -24,7 +24,9 @@ class TestLemmy:
             "name": "Test Post",
             "score": 100,
             "published": "2024-01-01T00:00:00Z",
-            "counts": {"upvotes": 100, "downvotes": 0, "comments": 5, "score": 100},
+            "post_view": {
+                "counts": {"upvotes": 100, "downvotes": 0, "comments": 5, "score": 100}
+            },
             "community": {"name": "technology"},
             "creator": {"name": "testuser"},
         }
@@ -56,7 +58,9 @@ class TestLemmy:
             "name": "Test Post",
             "score": 100,
             "published": "2024-01-01T00:00:00Z",
-            "counts": {"upvotes": 100, "downvotes": 0, "comments": 5, "score": 100},
+            "post_view": {
+                "counts": {"upvotes": 100, "downvotes": 0, "comments": 5, "score": 100},
+            },
             "community": {"name": "technology"},
             "creator": {"name": "testuser"},
         }
@@ -117,11 +121,13 @@ class TestLemmyPost:
             "published": "2024-01-01T12:00:00Z",
             "body": "Test post body",
             "ap_id": "https://lemmy.world/post/12345",
-            "counts": {
-                "upvotes": 150,
-                "downvotes": 10,
-                "comments": 5,
-                "score": 150,
+            "post_view": {
+                "counts": {
+                    "upvotes": 150,
+                    "downvotes": 10,
+                    "comments": 5,
+                    "score": 150,
+                }
             },
             "community": {"name": "technology"},
             "creator": {"name": "testuser"},

@@ -25,24 +25,26 @@ class LemmyPost(Post):
     def upvotes(self) -> int:
         # Lemmy posts use 'score' for upvotes if 'upvotes' is missing
         try:
-            return self.post["counts"]["upvotes"]
-        except Exception:
+            return self.post["post_view"]["counts"]["upvotes"]
+        except Exception as e:
             log.error(
                 "UPVOTES NOT FOUND",
                 post=self._id,
                 instance=self.instance.instance_url,
+                error_message=str(e),
             )
             return 0
 
     @property
     def downvotes(self) -> int:
         try:
-            return self.post["counts"]["downvotes"]
-        except Exception:
+            return self.post["post_view"]["counts"]["downvotes"]
+        except Exception as e:
             log.error(
                 "DOWNVOTES NOT FOUND",
                 post=self._id,
                 instance=self.instance.instance_url,
+                error_message=str(e),
             )
             return 0
 
@@ -51,11 +53,12 @@ class LemmyPost(Post):
         # Lemmy posts use 'comments' or 'num_comments' if available
         try:
             return self.counts["comments"]
-        except Exception:
+        except Exception as e:
             log.error(
                 "COMMENTS COUNT NOT FOUND",
                 post=self._id,
                 instance=self.instance.instance_url,
+                error_message=str(e),
             )
             return 0
 
@@ -63,11 +66,12 @@ class LemmyPost(Post):
     def score(self) -> int:
         try:
             return self.counts["score"]
-        except Exception:
+        except Exception as e:
             log.error(
                 "SCORE NOT FOUND",
                 post=self._id,
                 instance=self.instance.instance_url,
+                error_message=str(e),
             )
             return 0
 
@@ -188,8 +192,9 @@ class LemmyInstance:
             except AttributeError as e:
                 log.warning(
                     "POST NOT PRE-LOADED",
+                    post_url=post.url,
                     post_id=post._id,
-                    community=post.community.get("name"),
+                    community_name=post.community_name,
                     instance=self.instance_url,
                     error_message=str(e),
                     message=(

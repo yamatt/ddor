@@ -33,7 +33,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.0
         with:
-          version: "latest"
+          enable-cache: "auto"
       - name: "Set up Python"
         uses: actions/setup-python@v7.0.0
         with:

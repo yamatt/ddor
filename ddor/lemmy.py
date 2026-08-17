@@ -183,14 +183,15 @@ class LemmyInstance:
             return posts
 
         for post in posts:
-            if post:
+            try:
                 post.counts  # Pre-load count fetching
-            else:
+            except AttributeError as e:
                 log.warning(
                     "POST NOT PRE-LOADED",
                     post_id=post._id,
                     community=post.community.get("name"),
                     instance=self.instance_url,
+                    error_message=str(e),
                     message=(
                         "This seems to happen if there are errors related to connecting to the server. "
                         "There are likely also unstructured connection errors logged near here. "

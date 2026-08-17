@@ -183,7 +183,22 @@ class LemmyInstance:
             return posts
 
         for post in posts:
-            post.counts  # Trigger counts fetching
+            if post:
+                post.counts  # Pre-load count fetching
+            else:
+                log.warning(
+                    "POST NOT PRE-LOADED",
+                    post_id=post._id,
+                    community=post.community.get("name"),
+                    instance=self.instance_url,
+                    message=(
+                        "This seems to happen if there are errors related to connecting to the server. "
+                        "There are likely also unstructured connection errors logged near here. "
+                        "Removing post so pipeline can continue."
+                    )
+                )
+                posts.remove(post)
+
 
         return posts
 

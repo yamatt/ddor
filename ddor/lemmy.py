@@ -195,10 +195,9 @@ class LemmyInstance:
                         "This seems to happen if there are errors related to connecting to the server. "
                         "There are likely also unstructured connection errors logged near here. "
                         "Removing post so pipeline can continue."
-                    )
+                    ),
                 )
                 posts.remove(post)
-
 
         return posts
 

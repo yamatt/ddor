@@ -8,8 +8,12 @@ updates:
       default-days: 5
     assignees:
       - yamatt
+    groups:
+      minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
     labels:
-      - dependabot
+      - dependency
       - github-actions
   - package-ecosystem: "uv"
     directory: "/"
@@ -19,6 +23,10 @@ updates:
       default-days: 5
     assignees:
       - yamatt
+    groups:
+      minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
     labels:
-      - dependabot
+      - dependency
       - python

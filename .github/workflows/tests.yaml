@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/tests.yaml"
+      - "config/test.toml"
       - "ddor/**"
       - "tests/**"
       - "pyproject.toml"

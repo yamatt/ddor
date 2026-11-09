@@ -35,7 +35,7 @@ class Config:
 
         for item in communities_config:
             if not isinstance(item, dict):
-                raise ValueError(
+                raise TypeError(
                     f"Invalid community format: {item}. "
                     "Each community must be a dict with 'name' and 'weight' keys. "
                     'Example: {{name = "technology@lemmy.world", weight = 0}}'

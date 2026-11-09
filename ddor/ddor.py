@@ -1,19 +1,18 @@
 import math
 from datetime import datetime, timedelta
+from typing import ClassVar
 from urllib.parse import urlparse
-
-from ddor.logger import log
 
 
 class Post:
     """Wrapper class to make Lemmy posts compatible with the RSS builder."""
 
-    BLOCKED_THUMBNAIL_DOMAINS = [
+    BLOCKED_THUMBNAIL_DOMAINS: ClassVar[list[str]] = [
         "i.imgur.com",
     ]
 
     def __init__(self, post, community, creator, community_weight, instance):
-        post = post["post"] if "post" in post else post
+        post = post.get("post", post)
         self.post = post
         self._community = community
         self._creator = creator
@@ -45,7 +44,7 @@ class Post:
 
         if published:
             # Parse ISO 8601 timestamp and convert to Unix timestamp
-            return datetime.fromisoformat(published.replace("Z", "+00:00"))
+            return datetime.fromisoformat(published)
 
     @property
     def community_name(self):
@@ -77,9 +76,12 @@ class Post:
             )
 
         # If it's a valid image and the domain isn't blocked, use it
-        if is_image_type or has_image_ext:
-            if urlparse(url).netloc not in self.BLOCKED_THUMBNAIL_DOMAINS:
-                return url
+        if (
+            url
+            and (is_image_type or has_image_ext)
+            and urlparse(url).netloc not in self.BLOCKED_THUMBNAIL_DOMAINS
+        ):
+            return url
 
         return self.thumbnail_url
 

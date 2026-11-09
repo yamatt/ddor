@@ -1,5 +1,5 @@
-from datetime import datetime
 from functools import cached_property
+from typing import ClassVar
 
 from pythorhead import Lemmy as LemmyClient
 from pythorhead.types import SortType
@@ -26,7 +26,7 @@ class LemmyPost(Post):
         # Lemmy posts use 'score' for upvotes if 'upvotes' is missing
         try:
             return self.post["post_view"]["counts"]["upvotes"]
-        except Exception as e:
+        except (KeyError, TypeError) as e:
             log.error(
                 "UPVOTES NOT FOUND",
                 post=self._id,
@@ -39,7 +39,7 @@ class LemmyPost(Post):
     def downvotes(self) -> int:
         try:
             return self.post["post_view"]["counts"]["downvotes"]
-        except Exception as e:
+        except (KeyError, TypeError) as e:
             log.error(
                 "DOWNVOTES NOT FOUND",
                 post=self._id,
@@ -53,7 +53,7 @@ class LemmyPost(Post):
         # Lemmy posts use 'comments' or 'num_comments' if available
         try:
             return self.counts["comments"]
-        except Exception as e:
+        except (KeyError, TypeError) as e:
             log.error(
                 "COMMENTS COUNT NOT FOUND",
                 post=self._id,
@@ -66,7 +66,7 @@ class LemmyPost(Post):
     def score(self) -> int:
         try:
             return self.counts["score"]
-        except Exception as e:
+        except (KeyError, TypeError) as e:
             log.error(
                 "SCORE NOT FOUND",
                 post=self._id,
@@ -188,7 +188,7 @@ class LemmyInstance:
 
         for post in posts:
             try:
-                post.counts  # Pre-load count fetching
+                _ = post.counts
             except AttributeError as e:
                 log.warning(
                     "POST NOT PRE-LOADED",
@@ -212,7 +212,8 @@ class LemmyInstance:
         try:
             self.client.post.get(post_id=post_id)
             return True
-        except Exception as e:
+        # pythorhead raises a generic Exception for unsuccessful HTTP responses.
+        except Exception as e:  # noqa: BLE001
             log.warning(
                 "POST NOT FOUND",
                 post=post_id,
@@ -232,7 +233,7 @@ class LemmyInstance:
 
 class Lemmy:
 
-    SORT_MAP = {
+    SORT_MAP: ClassVar[dict[str, SortType]] = {
         "Day": SortType.TopDay,
         "Week": SortType.TopWeek,
         "Month": SortType.TopMonth,

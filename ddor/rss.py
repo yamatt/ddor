@@ -1,5 +1,4 @@
 import xml.etree.ElementTree as ET  # nosec
-from datetime import datetime, timezone
 from email.utils import format_datetime
 from functools import cached_property
 from html import escape
@@ -13,7 +12,11 @@ ET.register_namespace("atom", "http://www.w3.org/2005/Atom")
 
 class RSSBuilder:
     def __init__(
-        self, title: str, description: str, host_url: str, feed_url: str = None
+        self,
+        title: str,
+        description: str,
+        host_url: str,
+        feed_url: str | None = None,
     ):
         self.title = title
         self.description = description

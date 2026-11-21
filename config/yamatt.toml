@@ -55,7 +55,4 @@ list = [
     { name = "technology@lemmy.today", weight = 0 },
     { name = "science@lemmy.today", weight = 0 },
     { name = "general@retrolemmy.com", weight = 0 },
-    { name = "science_memes@mander.xyz", weight = 0 },
-    { name = "science@mander.xyz", weight = 0 },
-    { name = "dataisbeautiful@mander.xyz", weight = 0 },
 ]
